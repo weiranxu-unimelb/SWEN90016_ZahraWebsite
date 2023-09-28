@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Supplier Information</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input[type="text"], input[type="email"], select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+<h1>Supplier Information</h1>
+<div id="app">
+  <form>
+    <div class="info-block">
+      <label for="supplier-name-input">Supplier Name:</label>
+      <input type="text" id="supplier-name-input" v-model="formData.supplierName" required>
+    </div>
+    <div class="info-block">
+      <label for="supplier-address-input">Supplier Address:</label>
+      <input type="text" id="supplier-address-input" v-model="formData.supplierAddress" required>
+    </div>
+    <div class="info-block">
+      <label for="contact-name-input">Contact Name:</label>
+      <input type="text" id="contact-name-input" v-model="formData.contactName" required>
+    </div>
+    <div class="info-block">
+      <label for="contact-email-input">Contact Email:</label>
+      <input type="email" id="contact-email-input" v-model="formData.contactEmail" required>
+    </div>
+    <div class="info-block">
+      <label for="contact-phone-input">Contact Phone Number:</label>
+      <input type="text" id="contact-phone-input" v-model="formData.contactPhone" required>
+    </div>
+    <div class="info-block">
+      <label for="tax-id-input">Supplier Tax ID:</label>
+      <input type="text" id="tax-id-input" v-model="formData.supplierTaxID" required>
+    </div>
+    <div class="info-block">
+      <label for="payment-terms-input">Payment Terms:</label>
+      <input type="text" id="payment-terms-input" v-model="formData.paymentTerms" required>
+    </div>
+    <div class="info-block">
+      <label for="payment-method-input">Preferred Payment Method:</label>
+      <input type="text" id="payment-method-input" v-model="formData.preferredPaymentMethod" required>
+    </div>
+    <div class="info-block">
+      <label for="supplier-website-input">Supplier Website:</label>
+      <input type="text" id="supplier-website-input" v-model="formData.supplierWebsite">
+    </div>
+    <div class="info-block">
+      <label for="business-registration-input">Business Registration Number:</label>
+      <input type="text" id="business-registration-input" v-model="formData.businessRegistrationNumber">
+    </div>
+    <div class="info-block">
+      <label for="insurance-details-input">Insurance Details:</label>
+      <input type="text" id="insurance-details-input" v-model="formData.insuranceDetails">
+    </div>
+    <div class="info-block">
+      <label for="bank-details-input">Bank Details:</label>
+      <input type="text" id="bank-details-input" v-model="formData.bankDetails">
+    </div>
+    <div class="info-block">
+      <label for="contract-expiration-input">Contract Expiration Date:</label>
+      <input type="text" id="contract-expiration-input" v-model="formData.contractExpirationDate">
+    </div>
+    <div class="info-block">
+      <label for="notes-textarea">Notes:</label>
+      <textarea id="notes-textarea" v-model="formData.notes" rows="4"></textarea>
+    </div>
+  </form>
+  <button @click="submitForm">Submit</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script>
+  new Vue({
+    el: "#app",
+    data: {
+      formData: {
+        supplierName: "",
+        supplierAddress: "",
+        contactName: "",
+        contactEmail: "",
+        contactPhone: "",
+        supplierTaxID: "",
+        paymentTerms: "",
+        preferredPaymentMethod: "",
+        supplierWebsite: "",
+        businessRegistrationNumber: "",
+        insuranceDetails: "",
+        bankDetails: "",
+        contractExpirationDate: "",
+        notes: ""
+      }
+    },
+    methods: {
+      submitForm: function () {
+        // 在这里可以将数据发送到服务器或进行其他处理
+        console.log("Supplier Information:", this.formData);
+
+        // 清空表单数据
+        this.formData = {
+          supplierName: "",
+          supplierAddress: "",
+          contactName: "",
+          contactEmail: "",
+          contactPhone: "",
+          supplierTaxID: "",
+          paymentTerms: "",
+          preferredPaymentMethod: "",
+          supplierWebsite: "",
+          businessRegistrationNumber: "",
+          insuranceDetails: "",
+          bankDetails: "",
+          contractExpirationDate: "",
+          notes: ""
+        };
+      }
+    }
+  });
+</script>
+</body>
+</html>
