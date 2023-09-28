@@ -68,6 +68,41 @@
             <label for="partner-name-input">Shipping Partner Name:</label>
             <input type="text" id="partner-name-input" v-model="formData.partnerName" required>
         </div>
+        <div class="info-block">
+            <label for="partner-address-input">Shipping Partner Address:</label>
+            <input type="text" id="partner-address-input" v-model="formData.partnerAddress" required>
+        </div>
+        <div class="info-block">
+            <label for="contact-name-input">Contact Name:</label>
+            <input type="text" id="contact-name-input" v-model="formData.contactName" required>
+        </div>
+        <div class="info-block">
+            <label for="contact-email-input">Contact Email:</label>
+            <input type="email" id="contact-email-input" v-model="formData.contactEmail" required>
+        </div>
+        <div class="info-block">
+            <label for="contact-phone-input">Contact Phone Number:</label>
+            <input type="tel" id="contact-phone-input" v-model="formData.contactPhone" required>
+        </div>
+        <div class="info-block">
+            <label>Types of Shipping Offered:</label>
+            <div>
+                <input type="checkbox" id="ground-shipping" v-model="formData.shippingTypes" value="Ground Shipping">
+                <label for="ground-shipping">Ground Shipping</label>
+            </div>
+            <div>
+                <input type="checkbox" id="air-freight" v-model="formData.shippingTypes" value="Air Freight">
+                <label for="air-freight">Air Freight</label>
+            </div>
+            <div>
+                <input type="checkbox" id="ocean-freight" v-model="formData.shippingTypes" value="Ocean Freight">
+                <label for="ocean-freight">Ocean Freight</label>
+            </div>
+            <div>
+                <input type="checkbox" id="express-delivery" v-model="formData.shippingTypes" value="Express Delivery">
+                <label for="express-delivery">Express Delivery</label>
+            </div>
+        </div>
         <!-- 添加其他物流合作伙伴信息字段，根据需要 -->
         <!-- ... -->
 
@@ -86,6 +121,11 @@
         data: {
             formData: {
                 partnerName: "",
+                partnerAddress: "",
+                contactName: "",
+                contactEmail: "",
+                contactPhone: "",
+                shippingTypes: [],
                 // 添加其他物流合作伙伴信息字段，根据需要
                 // ...
                 notes: ""
@@ -113,6 +153,11 @@
                             // 清空表单数据
                             this.formData = {
                                 partnerName: "",
+                                partnerAddress: "",
+                                contactName: "",
+                                contactEmail: "",
+                                contactPhone: "",
+                                shippingTypes: [],
                                 // 重置其他物流合作伙伴信息字段，根据需要
                                 // ...
                                 notes: ""
