@@ -54,73 +54,88 @@
 </head>
 <body>
 <h1>Customer Information</h1>
-<form>
-	<div class="info-block">
-		<label for="name-input">Name:</label>
-		<input id="name-input" required type="text">
-	</div>
-	<div class="info-block">
-		<label for="age-input">Age:</label>
-		<input id="age-input" required type="text">
-	</div>
-	<div class="info-block">
-		<label for="email-input">E-mail:</label>
-		<input id="email-input" required type="text">
-	</div>
-	<div class="info-block">
-		<label for="shipping-address-input">Shipping Address:</label>
-		<input id="shipping-address-input" required type="text">
-	</div>
-	<div class="info-block">
-		<label for="billing-address-input">Billing Address:</label>
-		<input id="billing-address-input" required type="text">
-	</div>
-	<div class="info-block">
-		<label for="primary-contact-input">Primary Contact Number:</label>
-		<input id="primary-contact-input" required type="text">
-	</div>
-	<div class="info-block">
-		<label for="secondary-contact-input">Secondary Contact Number:</label>
-		<input id="secondary-contact-input" type="text">
-	</div>
-	<div class="info-block">
-		<label for="identifying-document-input">Identifying Document:</label>
-		<input id="identifying-document-input" required type="text">
-	</div>
-	<div class="info-block">
-		<label for="newsletter-select">Willing to Newsletter:</label>
-		<select id="newsletter-select">
-			<option value="yes">Yes</option>
-			<option value="no">No</option>
-		</select>
-	</div>
-</form>
-<button onclick="submitText()">Submit</button>
-<!-- 在这里添加你的JavaScript函数 -->
-<script>
-	function submitText() {
-		// 这里添加处理提交的代码
-		var name = document.getElementById('name-input').value;
-		var age = document.getElementById('age-input').value;
-		var email = document.getElementById('email-input').value;
-		var shippingAddress = document.getElementById('shipping-address-input').value;
-		var billingAddress = document.getElementById('billing-address-input').value;
-		var primaryContact = document.getElementById('primary-contact-input').value;
-		var secondaryContact = document.getElementById('secondary-contact-input').value;
-		var identifyingDocument = document.getElementById('identifying-document-input').value;
-		var newsletter = document.getElementById('newsletter-select').value;
+<div id="app">
+	<form>
+		<div class="info-block">
+			<label for="name-input">Name:</label>
+			<input type="text" id="name-input" v-model="formData.name" required>
+		</div>
+		<div class="info-block">
+			<label for="age-input">Age:</label>
+			<input type="text" id="age-input" v-model="formData.age" required>
+		</div>
+		<div class="info-block">
+			<label for="email-input">E-mail:</label>
+			<input type="text" id="email-input" v-model="formData.email" required>
+		</div>
+		<div class="info-block">
+			<label for="shipping-address-input">Shipping Address:</label>
+			<input type="text" id="shipping-address-input" v-model="formData.shippingAddress" required>
+		</div>
+		<div class="info-block">
+			<label for="billing-address-input">Billing Address:</label>
+			<input type="text" id="billing-address-input" v-model="formData.billingAddress" required>
+		</div>
+		<div class="info-block">
+			<label for="primary-contact-input">Primary Contact Number:</label>
+			<input type="text" id="primary-contact-input" v-model="formData.primaryContact" required>
+		</div>
+		<div class="info-block">
+			<label for="secondary-contact-input">Secondary Contact Number:</label>
+			<input type="text" id="secondary-contact-input" v-model="formData.secondaryContact">
+		</div>
+		<div class="info-block">
+			<label for="identifying-document-input">Identifying Document:</label>
+			<input type="text" id="identifying-document-input" v-model="formData.identifyingDocument" required>
+		</div>
+		<div class="info-block">
+			<label for="newsletter-select">Willing to Newsletter:</label>
+			<select id="newsletter-select" v-model="formData.newsletter">
+				<option value="yes">Yes</option>
+				<option value="no">No</option>
+			</select>
+		</div>
+	</form>
+	<button @click="submitForm">Submit</button>
+</div>
 
-		// 在这里可以将数据发送到服务器或进行其他处理
-		console.log("Name: " + name);
-		console.log("Age: " + age);
-		console.log("E-mail: " + email);
-		console.log("Shipping Address: " + shippingAddress);
-		console.log("Billing Address: " + billingAddress);
-		console.log("Primary Contact Number: " + primaryContact);
-		console.log("Secondary Contact Number: " + secondaryContact);
-		console.log("Identifying Document: " + identifyingDocument);
-		console.log("Willing to Newsletter: " + newsletter);
-	}
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script>
+	new Vue({
+		el: "#app",
+		data: {
+			formData: {
+				name: "",
+				age: "",
+				email: "",
+				shippingAddress: "",
+				billingAddress: "",
+				primaryContact: "",
+				secondaryContact: "",
+				identifyingDocument: "",
+				newsletter: "yes" // 默认选择"Yes"
+			}
+		},
+		methods: {
+			submitForm: function () {
+				// 在这里可以将数据发送到服务器或进行其他处理
+				console.log("Form Data:", this.formData);
+
+				// 清空表单数据
+				this.formData = {
+					name: "",
+					age: "",
+					email: "",
+					shippingAddress: "",
+					billingAddress: "",
+					primaryContact: "",
+					secondaryContact: "",
+					identifyingDocument: "",
+					newsletter: "yes" // 重置为默认选择"Yes"
+				};
+			}
+		}
+	});
 </script>
 </body>
 </html>
