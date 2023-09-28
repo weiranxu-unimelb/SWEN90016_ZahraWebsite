@@ -58,6 +58,20 @@
             transform: scale(1.05); /* 将文本框放大 5% */
             transition: transform 0.2s ease; /* 添加过渡效果 */
         }
+
+        /* 自定义选择框样式 */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            transform: scale(1.5); /* 增大勾选框的大小 */
+        }
+
+        .checkbox-group label {
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -86,23 +100,60 @@
         </div>
         <div class="info-block">
             <label>Types of Shipping Offered:</label>
-            <div>
-                <input type="checkbox" id="ground-shipping" v-model="formData.shippingTypes" value="Ground Shipping">
-                <label for="ground-shipping">Ground Shipping</label>
-            </div>
-            <div>
-                <input type="checkbox" id="air-freight" v-model="formData.shippingTypes" value="Air Freight">
-                <label for="air-freight">Air Freight</label>
-            </div>
-            <div>
-                <input type="checkbox" id="ocean-freight" v-model="formData.shippingTypes" value="Ocean Freight">
-                <label for="ocean-freight">Ocean Freight</label>
-            </div>
-            <div>
-                <input type="checkbox" id="express-delivery" v-model="formData.shippingTypes" value="Express Delivery">
-                <label for="express-delivery">Express Delivery</label>
+            <div class="checkbox-group">
+                <div class="checkbox-option">
+                    <input type="checkbox" id="ground-shipping" v-model="formData.shippingTypes" value="Ground Shipping">
+                    <label for="ground-shipping">Ground Shipping</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="air-freight" v-model="formData.shippingTypes" value="Air Freight">
+                    <label for="air-freight">Air Freight</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="ocean-freight" v-model="formData.shippingTypes" value="Ocean Freight">
+                    <label for="ocean-freight">Ocean Freight</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="express-delivery" v-model="formData.shippingTypes" value="Express Delivery">
+                    <label for="express-delivery">Express Delivery</label>
+                </div>
             </div>
         </div>
+
+
+        <style>
+            .checkbox-group {
+                display: flex;
+                flex-direction: column; /* 垂直方向排列 */
+            }
+
+            .checkbox-option {
+                display: flex;
+                align-items: center; /* 垂直居中对齐 */
+            }
+
+            /* 添加悬停效果 */
+            input[type="text"]:hover {
+                transform: scale(1.05); /* 将文本框放大 5% */
+                transition: transform 0.2s ease; /* 添加过渡效果 */
+            }
+
+            /* 样式化选择框 */
+            .options-container {
+                display: flex;
+                align-items: center;
+            }
+
+            .option-label {
+                margin-right: 10px;
+                font-weight: bold;
+            }
+
+            .option-checkbox {
+                transform: scale(1.5); /* 增大勾选框的大小 */
+                margin-right: 5px;
+            }
+        </style>
         <!-- 添加其他物流合作伙伴信息字段，根据需要 -->
         <!-- ... -->
 
