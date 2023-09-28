@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistics Partner Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="email"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<h1>Logistics Partner Information</h1>
+<div id="app">
+    <form>
+        <div class="info-block">
+            <label for="partner-name-input">Shipping Partner Name:</label>
+            <input type="text" id="partner-name-input" v-model="formData.partnerName" required>
+        </div>
+        <!-- 添加其他物流合作伙伴信息字段，根据需要 -->
+        <!-- ... -->
+
+        <div class="info-block">
+            <label for="notes-textarea">Notes:</label>
+            <textarea id="notes-textarea" v-model="formData.notes" rows="4"></textarea>
+        </div>
+    </form>
+    <button @click="submitForm">Submit</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            formData: {
+                partnerName: "",
+                // 添加其他物流合作伙伴信息字段，根据需要
+                // ...
+                notes: ""
+            }
+        },
+        methods: {
+            submitForm: function () {
+                // 模拟向后端发送数据的操作
+                const sendData = JSON.stringify(this.formData);
+
+                // 模拟后端API的URL
+                const apiUrl = "/api/saveLogisticsPartner";
+
+                // 模拟使用fetch API发送POST请求
+                fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: sendData,
+                })
+                    .then(response => {
+                        if (response.status === 200) {
+                            console.log("Data saved successfully!");
+                            // 清空表单数据
+                            this.formData = {
+                                partnerName: "",
+                                // 重置其他物流合作伙伴信息字段，根据需要
+                                // ...
+                                notes: ""
+                            };
+                        } else {
+                            console.error("Error saving data.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                    });
+            }
+        }
+    });
+</script>
+</body>
+</html>
