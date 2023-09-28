@@ -1,57 +1,126 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Customers Infomation</title>
-	</head>
-	<body>
-		<h1>Customer Information</h1>
-		<form>
-			<div id = "info-block">
-				<label for="text-input">Name:</label>
-				<input type="text" id="text-input">
-			</div>
-			<div id = "info-block">
-				<label for="text-input">Age:</label>
-				<input type="text" id="text-input">
-			</div>
-			<div id = "info-block">
-				<label for="text-input">E-mail:</label>
-				<input type="text" id="text-input">
-			</div>
-			<div id = "info-block">
-				<label for="text-input">Shipping Address:</label>
-				<input type="text" id="text-input">
-			</div>
-			<div id = "info-block">
-				<label for="text-input">Billing Address:</label>
-				<input type="text" id="text-input">
-			</div>
-			<div id = "info-block">
-				<label for="text-input">Primary Contact Number:</label>
-				<input type="text" id="text-input">
-			</div>
-			<div id = "info-block">
-				<label for="text-input">Secondary Contact Number:</label>
-				<input type="text" id="text-input">
-			</div>
-			<div id = "info-block">
-				<label for="text-input">Identifying Document:</label>
-				<input type="text" id="text-input">
-			</div>
-			<div id = "info-block">
-				<label for="text-input">Willing to Newsletter:</label>
-				<select>
-					<option value="yes">Yes</option>
-					<option value="no">No</option>
-				</select>
-			</div>
-		</form>
-    	<button onclick="submitText()">Submit</button>
-		<script>
-			function submitText() {
-				var text = document.getElementById('text-input').value;
-				console.log(text);
-			}
-		</script>
-	</body>
+<head>
+	<title>Customer Information</title>
+	<style>
+		/* 添加一些基本的样式来美化表单 */
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f4f4f4;
+			margin: 0;
+			padding: 0;
+		}
+
+		h1 {
+			text-align: center;
+			color: #333;
+		}
+
+		form {
+			max-width: 500px;
+			margin: 0 auto;
+			background: #fff;
+			padding: 20px;
+			border-radius: 5px;
+			box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+		}
+
+		label {
+			display: block;
+			margin-bottom: 5px;
+			font-weight: bold;
+		}
+
+		input[type="text"], select {
+			width: 100%;
+			padding: 10px;
+			margin-bottom: 10px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
+
+		button {
+			background-color: #007BFF;
+			color: #fff;
+			border: none;
+			padding: 10px 20px;
+			cursor: pointer;
+		}
+
+		button:hover {
+			background-color: #0056b3;
+		}
+	</style>
+</head>
+<body>
+<h1>Customer Information</h1>
+<form>
+	<div class="info-block">
+		<label for="name-input">Name:</label>
+		<input id="name-input" required type="text">
+	</div>
+	<div class="info-block">
+		<label for="age-input">Age:</label>
+		<input id="age-input" required type="text">
+	</div>
+	<div class="info-block">
+		<label for="email-input">E-mail:</label>
+		<input id="email-input" required type="text">
+	</div>
+	<div class="info-block">
+		<label for="shipping-address-input">Shipping Address:</label>
+		<input id="shipping-address-input" required type="text">
+	</div>
+	<div class="info-block">
+		<label for="billing-address-input">Billing Address:</label>
+		<input id="billing-address-input" required type="text">
+	</div>
+	<div class="info-block">
+		<label for="primary-contact-input">Primary Contact Number:</label>
+		<input id="primary-contact-input" required type="text">
+	</div>
+	<div class="info-block">
+		<label for="secondary-contact-input">Secondary Contact Number:</label>
+		<input id="secondary-contact-input" type="text">
+	</div>
+	<div class="info-block">
+		<label for="identifying-document-input">Identifying Document:</label>
+		<input id="identifying-document-input" required type="text">
+	</div>
+	<div class="info-block">
+		<label for="newsletter-select">Willing to Newsletter:</label>
+		<select id="newsletter-select">
+			<option value="yes">Yes</option>
+			<option value="no">No</option>
+		</select>
+	</div>
+</form>
+<button onclick="submitText()">Submit</button>
+<!-- 在这里添加你的JavaScript函数 -->
+<script>
+	function submitText() {
+		// 这里添加处理提交的代码
+		var name = document.getElementById('name-input').value;
+		var age = document.getElementById('age-input').value;
+		var email = document.getElementById('email-input').value;
+		var shippingAddress = document.getElementById('shipping-address-input').value;
+		var billingAddress = document.getElementById('billing-address-input').value;
+		var primaryContact = document.getElementById('primary-contact-input').value;
+		var secondaryContact = document.getElementById('secondary-contact-input').value;
+		var identifyingDocument = document.getElementById('identifying-document-input').value;
+		var newsletter = document.getElementById('newsletter-select').value;
+
+		// 在这里可以将数据发送到服务器或进行其他处理
+		console.log("Name: " + name);
+		console.log("Age: " + age);
+		console.log("E-mail: " + email);
+		console.log("Shipping Address: " + shippingAddress);
+		console.log("Billing Address: " + billingAddress);
+		console.log("Primary Contact Number: " + primaryContact);
+		console.log("Secondary Contact Number: " + secondaryContact);
+		console.log("Identifying Document: " + identifyingDocument);
+		console.log("Willing to Newsletter: " + newsletter);
+	}
+</script>
+</body>
 </html>
