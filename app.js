@@ -21,7 +21,7 @@ connection.on('connected', function(err){
 });
 
 // Usercase 1.
-// 创建Schema和Model
+// Create the customer schema.
 const customerSchema = mongoose.Schema({
     name: String,
     age: Number,
@@ -34,11 +34,11 @@ const customerSchema = mongoose.Schema({
     newsletter: String
 });
 const Customer = mongoose.model('Customer', customerSchema);
-// 配置Multer用于处理文件上传
+// Set Multer
 const upload = multer({ dest: 'uploads/PDF/' });
-// 设置视图引擎为EJS
+// Set Ejs
 app.set('view engine', 'ejs');
-// 路由处理
+// Router
 app.get('/', (req, res) => {
     res.render('index');
 });
