@@ -116,10 +116,10 @@ const carpetKitItemSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'CarpetCategory'
     },
-    length: Number,
-    breadth: Number,
-    weight: Number,
-    dimensions: String,
+    length: [Number],
+    breadth: [Number],
+    weight: [Number],
+    dimensions: [String],
     images: [String],
     quantity: Number,
     countryOfPackaging: String
@@ -176,7 +176,16 @@ const storage_item = multer.diskStorage({
 
 const uploadPNG_item = multer({ storage: storage_item, });
 
-app.post('/carpet-item', uploadPNG_item.array('images'), async (req, res) => {
+//At least three images.
+const checkImagesCount = (req, res, next) => {
+    if (req.files.length >= 3) {
+        next();
+    } else {
+        res.status(400).send('At least three images are required');
+    }
+};
+
+app.post('/carpet-item', uploadPNG_item.array('images'), checkImagesCount, async (req, res) => {
     try {
         const files = req.files;
         const filePaths = files.map(file => file.path + path.extname(file.originalname));
@@ -229,15 +238,15 @@ const storage_kit = multer.diskStorage({
 
 const uploadPNG_kit = multer({ storage: storage_kit, });
 
-app.post('/carpet-kit-item', uploadPNG_kit.array('images'), async (req, res) => {
+app.post('/carpet-kit-item', uploadPNG_kit.array('images'), checkImagesCount, async (req, res) => {
     const files = req.files;
     const filePaths = files.map(file => file.path);
     const carpetKitItems = new CarpetKitItem({
         category: req.body.category,
-        length: req.body.length,
-        breadth: req.body.breadth,
-        weight: req.body.weight,
-        dimensions: req.body.dimensions,
+        length: req.body.length.split(','),
+        breadth: req.body.breadth.split(','),
+        weight: req.body.weight.split(','),
+        dimensions: req.body.dimensions.split(','),
         images: req.filePaths,
         size: req.body.size,
         numericSize: req.body.numericSize,
