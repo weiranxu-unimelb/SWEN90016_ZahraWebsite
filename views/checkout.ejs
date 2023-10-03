@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+</head>
+<body>
+    <h1>Checkout</h1>
+
+    <!-- Customer Information (Defaulted) -->
+    <h2>Customer Information</h2>
+
+    <!-- <label for="customerName">Customer Name:</label>
+    <input type="text" id="customerName" readonly> 
+
+    <label for="email">Email:</label>
+    <input type="text" id="email" readonly>
+
+    <label for="phoneNumber">Phone Number:</label>
+    <input type="text" id="phoneNumber" readonly>
+
+    <label for="shippingAddress">Shipping Address:</label>
+    <input type="text" id="shippingAddress" readonly>
+
+    <label for="billingAddress">Billing Address:</label>
+    <input type="text" id="billingAddress" readonly>-->
+
+    <p>Customer Name:</p>
+    <p><%= firstCustomer ? firstCustomer.name : 'No customer available' %></p>
+
+    <p>Email:</p>
+    <p><%= firstCustomer ? firstCustomer.email : 'No customer available' %></p>
+
+    <p>Phone Number:</p>
+    <p><%= firstCustomer ? firstCustomer.primaryContact : 'No customer available' %></p>
+
+    <p>Shipping Address:</p>
+    <p><%= firstCustomer ? firstCustomer.shippingAddress : 'No customer available' %></p>
+
+    <p>Billing Address:</p>
+    <p><%= firstCustomer ? firstCustomer.billingAddress : 'No customer available' %></p>
+
+    
+
+    
+    <!-- <br><br>
+    <label for="carpetItem">Choose Carpet Item(s):</label><br>
+    <select id="item" name="carpetitem" required>
+        <% carpetItems.forEach(item => { %>
+            <option value="<%= item._id %>"><%= item.name %> (Quantity: <%= item.quantity %>)</option>
+        <% }) %>
+    </select>
+
+    <div>
+        <label for="itemquantity">Select Quantity:</label>
+        <input type="number" id="itemquantity" min="1" required>
+        <span id="reminder" style="color: red;"></span>
+    </div> -->
+    <!-- TODO:  // Check if quantity exceeds -->
+
+    <!-- Order Details -->
+    
+    <h2>Order Details</h2>
+    <form id="addItemForm">
+        <label for="carpetItem1">Choose Kit Item(s):</label><br>
+        <select id="item1" name="carpetkititem1" required>
+            <% combinedItems.forEach(item => { %>
+
+                    <option value="<%= item._id %>" data-name="<%= item.name %>" data-price="<%= item.price %>">
+                        Carpet/Kit Name: <%= item.name %> <br> (Quantity: <%= item.quantity %> || Price: <%= item.price %>)</option>
+            <% }) %>
+        </select>
+
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" min="1" required>
+
+        <button type="button" id="addItemButton">Add Item</button>
+    </form>
+
+    <!-- Display user-selected items and total cost -->
+    <h2>Your Selection:</h2>
+    <ul id="itemList"></ul>
+    <h2>Total Cost:</h2>
+    <p id="totalCost">0.00</p>
+    <form action="/checkout" method="POST" enctype="multipart/form-data">
+
+<!-- JavaScript to handle item addition and total cost calculation -->
+<script>
+    const addItemForm = document.getElementById('addItemForm');
+    const itemList = document.getElementById('itemList');
+    const totalCost = document.getElementById('totalCost');
+    const items = [];
+
+    addItemForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+    });
+
+    const addItemButton = document.getElementById('addItemButton');
+    addItemButton.addEventListener('click', () => {
+        const itemSelect = document.getElementById('item1');
+        const selectedOption = itemSelect.options[itemSelect.selectedIndex];
+        const quantity = parseInt(document.getElementById('quantity').value, 10);
+        // const item1 = document.getElementById('item1').value;
+
+        // Validate quantity
+        if (isNaN(quantity) || quantity <= 0) {
+            alert('Please enter a valid quantity.');
+            return;
+        }
+
+        const itemName = selectedOption.getAttribute('data-name');
+        const itemPrice = parseFloat(selectedOption.getAttribute('data-price'));
+        const cost = itemPrice * quantity;
+        const item = {
+            name: itemName,
+            quantity,
+            price: itemPrice,
+            totalCost: cost.toFixed(2) // Format total cost to two decimal places
+        };
+        items.push(item);
+
+        // Update the displayed list and total cost
+        updateItemList();
+        updateTotalCost();
+    });
+
+    function updateItemList() {
+        itemList.innerHTML = '';
+        items.forEach((item, index) => {
+            const listItem = document.createElement('li');
+            // listItem.textContent = `Item: ${item.item1.name}, Quantity: ${item.quantity}, Price: $${item.item1.price}`;
+            listItem.textContent = `Item: ${item.name}, Quantity: ${item.quantity}, Price: $${item.price.toFixed(2)}, Total Cost: $${item.totalCost}`;
+            itemList.appendChild(listItem);
+        });
+    }
+
+    function updateTotalCost() {
+        const costArray = items.map(item => parseFloat(item.totalCost));
+        const total = costArray.reduce((acc, current) => acc + current, 0);
+        totalCost.textContent = `$${total.toFixed(2)}`;
+        
+    }
+</script>
+
+
+
+
+    <br><br>
+    <label for="preferredPaymentMethod">Preferred Payment Method:</label><br>
+    <input type="text" id="preferredPaymentMethod" placeholder="MasterCard">
+
+    <br><br>
+    <label for="deliveryInstructions">Delivery Instructions:</label><br>
+    <textarea id="deliveryInstructions" placeholder="From Iran to Melbourne"></textarea>
+
+    <br><br>
+    <label for="purchaseOrderDate">Purchase Order Date:</label><br>
+    <p><%= currentDate %></p>
+
+    <br>
+    <label for="orderNumber">Order Number:</label><br>
+    <input type="text" id="orderNumber" readonly>
+
+    <!-- <br><br>
+    <label for="orderTotal">Order Total:</label><br>
+    <input type="text" id="orderTotal" readonly> -->
+
+    <br><br>
+    <label for="discounts">Discounts or Code:</label><br>
+    <input type="text" id="discounts">
+
+    <br><br>
+    <label for="salesRepresentative">Sales Representative:</label><br>
+    <input type="text" id="salesRepresentative">
+
+    <br><br>
+    <label for="orderStatus">Order Status:</label><br>
+    <select id="orderStatus">
+        <option value="pending">Pending</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="shipped">Shipped</option>
+        <option value="delivered">Delivered</option>
+    </select><br>
+
+    <br><br>
+    <label for="customerNotes">Customer Notes:</label><br>
+    <textarea id="customerNotes"></textarea>
+
+    <br><br>
+    
+
+
+
+
+    <!-- Submit Button -->
+    <button id="submitOrder" type="submit">Submit Order</button>
+</form>
+
+    <!-- JavaScript -->
+    <!-- <script src="script.js"></script> -->
+</body>
+</html>

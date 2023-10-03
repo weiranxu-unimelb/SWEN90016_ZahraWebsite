@@ -92,6 +92,7 @@ const carpetItemSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'CarpetCategory'
     },
+    name: String,
     length: Number,
     breadth: Number,
     weight: Number,
@@ -107,7 +108,11 @@ const carpetItemSchema = new mongoose.Schema({
     },
     numericSize: Number,
     quantity: Number,
-    countryOfOrigin: String
+    countryOfOrigin: String,
+    price: {
+        type: Number,
+        default: 0
+    }
 });
 
 // Create CarpetKitItem schema.
@@ -116,13 +121,18 @@ const carpetKitItemSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'CarpetCategory'
     },
+    name: String,
     length: [Number],
     breadth: [Number],
     weight: [Number],
     dimensions: [String],
     images: [String],
     quantity: Number,
-    countryOfPackaging: String
+    countryOfPackaging: String,
+    price: {
+        type: Number,
+        default: 0
+    }
 });
 
 
@@ -191,6 +201,7 @@ app.post('/carpet-item', uploadPNG_item.array('images'), checkImagesCount, async
         const filePaths = files.map(file => file.path + path.extname(file.originalname));
         const carpetItem = new CarpetItem({
             category: req.body.category,
+            name: req.body.name,
             length: req.body.length,
             breadth: req.body.breadth,
             weight: req.body.weight,
@@ -203,7 +214,8 @@ app.post('/carpet-item', uploadPNG_item.array('images'), checkImagesCount, async
             size: req.body.size,
             numericSize: req.body.numericSize,
             quantity: req.body.quantity,
-            countryOfOrigin: req.body.countryOfOrigin
+            countryOfOrigin: req.body.countryOfOrigin,
+            price: req.body.price
         });
 
         await carpetItem.save();
@@ -243,6 +255,7 @@ app.post('/carpet-kit-item', uploadPNG_kit.array('images'), checkImagesCount, as
     const filePaths = files.map(file => file.path);
     const carpetKitItems = new CarpetKitItem({
         category: req.body.category,
+        name: req.body.name,
         length: req.body.length.split(','),
         breadth: req.body.breadth.split(','),
         weight: req.body.weight.split(','),
@@ -251,7 +264,8 @@ app.post('/carpet-kit-item', uploadPNG_kit.array('images'), checkImagesCount, as
         size: req.body.size,
         numericSize: req.body.numericSize,
         quantity: req.body.quantity,
-        countryOfOrigin: req.body.countryOfOrigin
+        countryOfOrigin: req.body.countryOfOrigin,
+        price: req.body.price
     });
 
     carpetKitItems.save()
@@ -264,6 +278,137 @@ app.post('/carpet-kit-item', uploadPNG_kit.array('images'), checkImagesCount, as
         });
 
 });
+
+// Checkout Page
+// app.get('/checkout', (req, res) => {
+//     res.render('checkout');
+// });
+
+// Create an empty cart (array) to store selected items
+const cart = [];
+
+
+const checkoutSchema = new mongoose.Schema({
+    // TODO: add the schema of selectedItems / selectedKits
+    quantity: Number,
+    totalCost: Number,
+    preferredPaymentMethod: String,
+    deliveryInstructions: String,
+    purchaseOrderDate: Date,
+    orderNumber: String,
+    discounts: String,
+    salesRepresentativeName: String,
+    orderStatus: String,
+    additionalNotes: String
+});
+
+const Checkout = mongoose.model('Checkout', checkoutSchema);
+
+//module.exports = Checkout;
+
+// Just assume the Logged in Customer to be the first in Customer list
+app.get('/checkout', async (req, res) => {
+    try {
+        const customers = await Customer.find();
+        const firstCustomer = customers.length > 0 ? customers[0] : null;
+        const currentDate = new Date().toLocaleDateString();
+        const carpetItems = await CarpetItem.find();
+        const carpetKitItems = await CarpetKitItem.find();
+        const combinedItems = [...carpetKitItems, ...carpetItems]; // Merge into a single array
+
+
+        res.render('checkout', {
+            // Parameter to be transmitted
+            firstCustomer: firstCustomer,
+            currentDate: currentDate,
+            carpetItems: carpetItems,
+            carpetKitItems: carpetKitItems,
+            combinedItems: combinedItems
+        });
+    } catch (error) {
+        console.log('Failed to show customer information', error);
+        res.render('checkout_error');
+    }
+});
+
+
+//const Checkout = require('./models/checkout'); // Replace with the actual path to your Checkout model
+
+app.post('/checkout', async (req, res) => {
+    //const { quantity, totalCost, preferredPaymentMethod, deliveryInstructions, purchaseOrderDate, orderNumber, orderTotal, salesRepresentativeName, orderStatus, additionalNotes } = req.body;
+
+    // Create a new checkout document
+    const newCheckout = new Checkout({
+
+        quantity: req.body.quantity,
+        totalCost: req.body.totalCost,
+        preferredPaymentMethod: req.body.preferredPaymentMethod,
+        deliveryInstructions: req.body.deliveryInstructions,
+        purchaseOrderDate: req.body.purchaseOrderDate,
+        orderNumber: req.body.orderNumber,
+        discounts: req.body.discounts,
+        salesRepresentativeName: req.body.salesRepresentative,
+        orderStatus: req.body.orderStatus,
+        additionalNotes: req.body.additionalNotes
+    });
+
+    newCheckout.save()
+        .then(() => {
+            console.log('Successfully save carpet kit details');
+            res.render('checkout_success');
+        })
+        .catch((error) => {
+            console.log('Failed to save carpet kit details', error);
+            res.render('checkout_error');
+        });
+
+});
+
+
+
+
+
+// document.addEventListener('DOMContentLoaded', () => {
+//     // Simulate default customer data (replace with actual data)
+//     const defaultCustomerData = {
+//         customerName: 'John Doe',
+//         email: 'johndoe@example.com',
+//         phoneNumber: '123-456-7890',
+//         shippingAddress: '123 Shipping St, City, Country',
+//         billingAddress: '123 Billing St, City, Country',
+//         purchaseOrderDate: new Date().toLocaleDateString(),
+//         orderNumber: '12345',
+//         orderTotal: '$100.00',
+//         salesRepresentative: 'Jane Smith'
+//     };
+
+//     // Populate default customer data in the form
+//     document.getElementById('customerName').value = defaultCustomerData.customerName;
+//     document.getElementById('email').value = defaultCustomerData.email;
+//     document.getElementById('phoneNumber').value = defaultCustomerData.phoneNumber;
+//     document.getElementById('shippingAddress').value = defaultCustomerData.shippingAddress;
+//     document.getElementById('billingAddress').value = defaultCustomerData.billingAddress;
+//     document.getElementById('purchaseOrderDate').value = defaultCustomerData.purchaseOrderDate;
+//     document.getElementById('orderNumber').value = defaultCustomerData.orderNumber;
+//     document.getElementById('orderTotal').value = defaultCustomerData.orderTotal;
+//     document.getElementById('salesRepresentative').value = defaultCustomerData.salesRepresentative;
+
+//     // Handle form submission (you can send this data to your server)
+//     document.getElementById('submitOrder').addEventListener('click', () => {
+//         const formData = {
+//             carpetItem: document.getElementById('carpetItem').value,
+//             quantity: document.getElementById('quantity').value,
+//             preferredPaymentMethod: document.getElementById('preferredPaymentMethod').value,
+//             deliveryInstructions: document.getElementById('deliveryInstructions').value,
+//             orderStatus: document.getElementById('orderStatus').value,
+//             discounts: document.getElementById('discounts').value,
+//             customerNotes: document.getElementById('customerNotes').value
+//         };
+
+//         // You can now send formData to your server for further processing
+//         // using AJAX or fetch.
+//     });
+// });
 
 
 // Run the server.

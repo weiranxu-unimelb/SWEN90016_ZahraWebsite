@@ -6,6 +6,9 @@
 <body>
     <h1>Create Carpet Kit Item</h1>
     <form action="/carpet-kit-item" method="POST" enctype="multipart/form-data">
+        <label for="name">Kit Name:</label><br>
+        <input type="text" id="name" name="name" required>
+        <br><br>
         <label for="category">Category:</label><br>
         <select id="category" name="category" disabled>
             <% carpetCategories.forEach(category => { %>
@@ -46,6 +49,9 @@
         <br><br>
         <label for="quantity">Quantity:</label><br>
         <input type="number" id="quantity" name="quantity" required>
+        <br><br>
+        <label for="price">Price:</label><br>
+        <input type="number" id="price" name="price" required>
         <br><br>
         <label for="countryOfOrigin">Country of Origin:</label><br>
         <select id="countryOfOrigin" name="countryOfOrigin" required>
