@@ -55,7 +55,7 @@ app.set('view engine', 'ejs');
 // Router
 app.get('/', (req, res) => {
     // Pass the message variable as null (or a default value) initially
-    const message = null;
+    const message = '';
     res.render('login', { message });
 });
 
@@ -429,10 +429,6 @@ const userSchema = mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 
-// 注册路由
-// 注册路由
-
-
 // 登录路由
 // 处理登录表单提交
 app.post('/login', async (req, res) => {
@@ -450,7 +446,7 @@ app.post('/login', async (req, res) => {
             // 用户验证成功，可以进行登录操作
             // 例如，设置用户的登录状态或创建会话等
             req.session.user = user; // 存储用户信息到会话
-            res.render('login_success');
+            res.render('index');
             return;
         }
     } catch (error) {
