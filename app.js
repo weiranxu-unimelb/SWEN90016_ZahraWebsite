@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken')
 
 
 // Initialize the app.
@@ -431,6 +432,7 @@ const User = mongoose.model('User', userSchema);
 
 // 登录路由
 // 处理登录表单提交
+const SECRET = "fdfhfjdfdjfdjerwrereresaassa2dd@ddds"
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     let message = ''; // 初始化 message 变量为空
@@ -440,14 +442,24 @@ app.post('/login', async (req, res) => {
 
         if (!user) {
             message = '用户不存在';
+            //return res.status(422).send({
+            //    message: 'Invalid User'
+            //})
+            return res.status(422).render('login_error')
         } else if (user.password !== password) {
-            message = '密码不正确';
+            //return res.status(422).send({
+            //    message: 'Incorrect Password'
+            //})
+            return res.status(422).render('login_error')
         } else {
             // 用户验证成功，可以进行登录操作
             // 例如，设置用户的登录状态或创建会话等
-            req.session.user = user; // 存储用户信息到会话
-            res.render('index');
-            return;
+            //req.session.user = user; // 存储用户信息到会话
+            const token = jwt.sign({
+                id: String(user._id),
+            }, SECRET)
+            return res.status(200).render('index');
+
         }
     } catch (error) {
         console.error('Failed to log in', error);
@@ -510,7 +522,8 @@ app.post('/register', async (req, res) => {
 // 登录页面
 app.get('/login', (req, res) => {
     const message = ''; // 初始化 message 变量为空
-    res.render('login', { message }); // 传递 message 变量给模板
+    res.send(req.params);
+    res.render('login'); // 传递 message 变量给模板
 });
 
 
