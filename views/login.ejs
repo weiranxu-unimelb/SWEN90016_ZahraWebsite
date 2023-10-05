@@ -1,0 +1,21 @@
+<!-- login.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<h1>Login</h1>
+<% if (message) { %>
+    <p><%= message %></p>
+<% } %>
+<form method="post" action="/login">
+    <!-- Your login form fields here -->
+    <!-- Username and password fields go here -->
+    <button type="submit">Login</button>
+</form>
+<!-- Add a link/button to navigate to the registration page -->
+<p>Don't have an account? <a href="/register">Register here</a></p>
+</body>
+</html>

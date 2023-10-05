@@ -3,9 +3,13 @@ const express = require('express');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const path = require('path');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+
 
 // Initialize the app.
 const app = express();
+
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
@@ -50,7 +54,9 @@ const uploadPDF = multer({ storage: storage_PDF, });
 app.set('view engine', 'ejs');
 // Router
 app.get('/', (req, res) => {
-    res.render('index');
+    // Pass the message variable as null (or a default value) initially
+    const message = null;
+    res.render('login', { message });
 });
 
 app.get('/customer', (req, res) => {
@@ -409,6 +415,125 @@ app.post('/checkout', async (req, res) => {
 //         // using AJAX or fetch.
 //     });
 // });
+
+
+const userSchema = mongoose.Schema({
+    username: String,
+    password: String,
+    role: {
+        type: String,
+        enum: ['user', 'admin'], // 'user' 表示一般用户，'admin' 表示管理员
+        default: 'user' // 默认为一般用户
+    }
+});
+const User = mongoose.model('User', userSchema);
+
+
+// 注册路由
+// 注册路由
+
+
+// 登录路由
+// 处理登录表单提交
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    let message = ''; // 初始化 message 变量为空
+
+    try {
+        const user = await User.findOne({ username: username });
+
+        if (!user) {
+            message = '用户不存在';
+        } else if (user.password !== password) {
+            message = '密码不正确';
+        } else {
+            // 用户验证成功，可以进行登录操作
+            // 例如，设置用户的登录状态或创建会话等
+            req.session.user = user; // 存储用户信息到会话
+            res.render('login_success');
+            return;
+        }
+    } catch (error) {
+        console.error('Failed to log in', error);
+        message = '登录失败';
+    }
+
+    // 无论成功还是失败，都传递 message 变量给模板
+    res.render('login', { message });
+});
+
+
+// 注销路由
+app.get('/logout', (req, res) => {
+    // 清除用户的登录状态或会话信息
+    req.session.destroy((err) => {
+        if (err) {
+            console.log('Failed to log out', err);
+        }
+        res.render('logout_success');
+    });
+});
+
+// 注册页面
+app.get('/register', (req, res) => {
+    res.render('register');
+});
+
+// 处理注册表单提交
+app.post('/register', async (req, res) => {
+    const { username, password, adminKey } = req.body;
+    let newUser; // 声明 newUser 变量在条件之外的作用域
+
+    // 检查是否输入了管理员密钥
+    if (adminKey === '12345678') {
+        // 输入了正确的管理员密钥，将用户角色设置为管理员
+        newUser = new User({
+            username: username,
+            password: password,
+            role: 'admin' // 设置用户为管理员
+        });
+    } else {
+        // 未输入管理员密钥或输入错误，将用户角色设置为一般用户
+        newUser = new User({
+            username: username,
+            password: password,
+            role: 'user' // 设置用户为一般用户
+        });
+    }
+
+    try {
+        await newUser.save();
+        res.render('login');
+    } catch (error) {
+        console.error('Failed to register user', error);
+
+        res.render('registration_error', { message: 'Fail to register, Pls retry!' });
+    }
+});
+
+// 登录页面
+app.get('/login', (req, res) => {
+    const message = ''; // 初始化 message 变量为空
+    res.render('login', { message }); // 传递 message 变量给模板
+});
+
+
+// 注销
+app.get('/logout', (req, res) => {
+    // 清除用户的登录状态或会话信息
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Failed to log out', err);
+        }
+        res.render('logout_success');
+    });
+});
+
+app.get('/login_error', (req, res) => {
+    const message = 'Invalid username or password'; // Customize the error message
+    res.render('login_error', { message });
+});
+
 
 
 // Run the server.
