@@ -14,6 +14,12 @@ const app = express();
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
+app.use(session({
+    secret: 'your-secret-key', // Change this to a secure secret key
+    resave: false,
+    saveUninitialized: true,
+  }));
+
 // DB connect code for 'mongoose' package.
 const uri = "mongodb+srv://weiranx1:weiranxu123@swen90016.kohjae3.mongodb.net/Zahra_Data?retryWrites=true&w=majority";
 mongoose.connect(uri, {
@@ -312,31 +318,67 @@ const checkoutSchema = new mongoose.Schema({
 const Checkout = mongoose.model('Checkout', checkoutSchema);
 
 //module.exports = Checkout;
-
-// Just assume the Logged in Customer to be the first in Customer list
+// Updated Checkout Page
 app.get('/checkout', async (req, res) => {
     try {
-        const customers = await Customer.find();
-        const firstCustomer = customers.length > 0 ? customers[0] : null;
+      // Check if a user is logged in
+      if (!req.session.user) {
+        return res.status(401).render('login'); // Redirect to the login page if not logged in
+      }
+  
+      // Access user information from the session
+        const user = req.session.user;
         const currentDate = new Date().toLocaleDateString();
         const carpetItems = await CarpetItem.find();
         const carpetKitItems = await CarpetKitItem.find();
         const combinedItems = [...carpetKitItems, ...carpetItems]; // Merge into a single array
-
-
-        res.render('checkout', {
-            // Parameter to be transmitted
-            firstCustomer: firstCustomer,
-            currentDate: currentDate,
-            carpetItems: carpetItems,
-            carpetKitItems: carpetKitItems,
-            combinedItems: combinedItems
-        });
+  
+      // Continue with your existing code to fetch other data like carpet items, etc.
+  
+      // Render the 'checkout' page with the user's information
+      res.render('checkout', {
+        user: user,
+        currentDate: currentDate,
+        carpetItems: carpetItems,
+        carpetKitItems: carpetKitItems,
+        combinedItems: combinedItems
+      });
     } catch (error) {
-        console.log('Failed to show customer information', error);
-        res.render('checkout_error');
+      console.log('Failed to show customer information', error);
+      res.render('checkout_error');
     }
-});
+  });
+
+  
+  
+  
+  
+  
+
+// Just assume the Logged in Customer to be the first in Customer list
+// app.get('/checkout', async (req, res) => {
+//     try {
+//         const customers = await Customer.find();
+//         const firstCustomer = customers.length > 0 ? customers[0] : null;
+//         const currentDate = new Date().toLocaleDateString();
+//         const carpetItems = await CarpetItem.find();
+//         const carpetKitItems = await CarpetKitItem.find();
+//         const combinedItems = [...carpetKitItems, ...carpetItems]; // Merge into a single array
+
+
+//         res.render('checkout', {
+//             // Parameter to be transmitted
+//             firstCustomer: firstCustomer,
+//             currentDate: currentDate,
+//             carpetItems: carpetItems,
+//             carpetKitItems: carpetKitItems,
+//             combinedItems: combinedItems
+//         });
+//     } catch (error) {
+//         console.log('Failed to show customer information', error);
+//         res.render('checkout_error');
+//     }
+// });
 
 
 //const Checkout = require('./models/checkout'); // Replace with the actual path to your Checkout model
@@ -372,50 +414,6 @@ app.post('/checkout', async (req, res) => {
 });
 
 
-
-
-
-// document.addEventListener('DOMContentLoaded', () => {
-//     // Simulate default customer data (replace with actual data)
-//     const defaultCustomerData = {
-//         customerName: 'John Doe',
-//         email: 'johndoe@example.com',
-//         phoneNumber: '123-456-7890',
-//         shippingAddress: '123 Shipping St, City, Country',
-//         billingAddress: '123 Billing St, City, Country',
-//         purchaseOrderDate: new Date().toLocaleDateString(),
-//         orderNumber: '12345',
-//         orderTotal: '$100.00',
-//         salesRepresentative: 'Jane Smith'
-//     };
-
-//     // Populate default customer data in the form
-//     document.getElementById('customerName').value = defaultCustomerData.customerName;
-//     document.getElementById('email').value = defaultCustomerData.email;
-//     document.getElementById('phoneNumber').value = defaultCustomerData.phoneNumber;
-//     document.getElementById('shippingAddress').value = defaultCustomerData.shippingAddress;
-//     document.getElementById('billingAddress').value = defaultCustomerData.billingAddress;
-//     document.getElementById('purchaseOrderDate').value = defaultCustomerData.purchaseOrderDate;
-//     document.getElementById('orderNumber').value = defaultCustomerData.orderNumber;
-//     document.getElementById('orderTotal').value = defaultCustomerData.orderTotal;
-//     document.getElementById('salesRepresentative').value = defaultCustomerData.salesRepresentative;
-
-//     // Handle form submission (you can send this data to your server)
-//     document.getElementById('submitOrder').addEventListener('click', () => {
-//         const formData = {
-//             carpetItem: document.getElementById('carpetItem').value,
-//             quantity: document.getElementById('quantity').value,
-//             preferredPaymentMethod: document.getElementById('preferredPaymentMethod').value,
-//             deliveryInstructions: document.getElementById('deliveryInstructions').value,
-//             orderStatus: document.getElementById('orderStatus').value,
-//             discounts: document.getElementById('discounts').value,
-//             customerNotes: document.getElementById('customerNotes').value
-//         };
-
-//         // You can now send formData to your server for further processing
-//         // using AJAX or fetch.
-//     });
-// });
 
 
 const userSchema = mongoose.Schema({
@@ -460,6 +458,12 @@ app.post('/login', async (req, res) => {
                 id: String(user._id),
             }, SECRET)
 
+            // After successfully authenticating the user, store their information in the session
+            req.session.user = {
+                id: user._id,
+                username: user.username,
+                role: user.role,
+              };
             //req.session.auth_username=user.username;
             //req.session.auth_password=user.password;
             //res.cookie('username',user.username, {maxAge:1000 * 60 * 60 * 24 * 7,signed:true});
