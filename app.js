@@ -57,7 +57,7 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => {
     // Pass the message variable as null (or a default value) initially
     const message = '';
-    res.render('index', { message });
+    res.render('login', { message });
 });
 
 app.get('/customer', (req, res) => {
