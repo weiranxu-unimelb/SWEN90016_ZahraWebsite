@@ -57,7 +57,7 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => {
     // Pass the message variable as null (or a default value) initially
     const message = '';
-    res.render('login', { message });
+    res.render('index', { message });
 });
 
 app.get('/customer', (req, res) => {
@@ -458,6 +458,10 @@ app.post('/login', async (req, res) => {
             const token = jwt.sign({
                 id: String(user._id),
             }, SECRET)
+            //req.session.auth_username=user.username;
+            //req.session.auth_password=user.password;
+            //res.cookie('username',user.username, {maxAge:1000 * 60 * 60 * 24 * 7,signed:true});
+            //res.cookie('password',user.password, {maxAge: 1000 * 60 * 60 * 24 * 7,signed:true})
             return res.status(200).render('index');
 
         }
@@ -542,6 +546,14 @@ app.get('/login_error', (req, res) => {
     const message = 'Invalid username or password'; // Customize the error message
     res.render('login_error', { message });
 });
+
+app.get('/salesDashboard', (req, res)=> {
+    res.render('salesDashboard')
+})
+
+app.post('/salesDashboard', (req, res)=> {
+    res.render('salesDashboard');
+})
 
 
 
