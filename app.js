@@ -433,7 +433,7 @@ const User = mongoose.model('User', userSchema);
 // 登录路由
 // 处理登录表单提交
 const SECRET = "fdfhfjdfdjfdjerwrereresaassa2dd@ddds"
-let isAdminUser = false;
+// let isAdminUser = false;
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     let message = ''; // 初始化 message 变量为空
@@ -460,9 +460,6 @@ app.post('/login', async (req, res) => {
                 id: String(user._id),
             }, SECRET)
 
-            if(user.role == 'admin'){
-                isAdminUser = true;
-            }
             //req.session.auth_username=user.username;
             //req.session.auth_password=user.password;
             //res.cookie('username',user.username, {maxAge:1000 * 60 * 60 * 24 * 7,signed:true});
@@ -553,12 +550,12 @@ app.get('/login_error', (req, res) => {
 });
 
 app.get('/salesDashboard', (req, res)=> {
-    if(isAdminUser) res.render('salesDashboard')
+    if(req.session.user.role == 'admin') res.render('salesDashboard')
     else console.log("Not an administrator");
 })
 
 app.post('/salesDashboard', (req, res)=> {
-    if(isAdminUser) res.render('salesDashboard')
+    if(req.session.user.role == 'admin') res.render('salesDashboard')
     else console.log("Not an administrator");
 })
 
