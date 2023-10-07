@@ -6,6 +6,12 @@ const path = require('path');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken')
+// Learn about API authentication here: https://plotly.com/nodejs/getting-started
+// Find your api_key here: https://plotly.com/settings/api
+//username, api_key 
+var plotly = require('plotly')('zhihanzhang81', 'iw6gdoMZ6iJ7Ob1Vpkum');
+
+
 
 
 // Initialize the app.
@@ -522,16 +528,56 @@ app.get('/login_error', (req, res) => {
     res.render('login_error', { message });
 });
 
-app.get('/salesDashboard', (req, res) => {
-    const user = req.session.user;
-    if (user.role == 'admin') {
-        res.render('salesDashboard');
-    } else {
-        res.render('salesDashboard_user');
-        console.log("Not an administrator");
-    }
+// app.get('/salesDashboard', (req, res) => {
+//     const user = req.session.user;
+//     if (user.role == 'admin') {
+//         res.render('salesDashboard');
+//     } else {
+//         res.render('salesDashboard_user');
+//         console.log("Not an administrator");
+//     }
     
-})
+// })
+
+
+
+//Analytics Dashboard (for Testing)
+app.get('/salesDashboard', async (req, res) => {
+    try {
+        const user = req.session.user;
+        if (user.role == 'admin') {
+            // Fetch Top 5 carpet items with low/high inventory
+            const lowInventoryItems = await CarpetItem.find().sort({ quantity: 1 }).limit(5);
+            const highInventoryItems = await CarpetItem.find().sort({ quantity: -1 }).limit(5);
+
+            // var data = [
+            // {
+            //     x: ["giraffes", "orangutans", "monkeys"],
+            //     y: [20, 14, 23],
+            //     type: "bar"
+            // }
+            // ];
+            // var graphOptions = { filename: "basic-bar", fileopt: "overwrite" };
+            // var plot_1 = Plotly.newPlot('plot_1', data, graphOptions);
+            // var plot_1_html = await plot_1.toHtml();
+              
+
+            res.render('salesDashboard', {
+                lowInventoryItems: lowInventoryItems,
+                highInventoryItems: highInventoryItems,
+                //plot_1: plot_1_html
+            });
+        } else {
+            res.render('salesDashboard_user');
+            console.log("Not an administrator");
+        }
+        
+       
+    } catch (error) {
+        console.error('Failed to fetch carpet items', error);
+        res.render('dashboard_error');
+    }
+});
 
 app.post('/salesDashboard', (req, res) => {
     const user = req.session.user;
@@ -544,6 +590,7 @@ app.post('/salesDashboard', (req, res) => {
     // if(req.session.user.role == 'admin') res.render('salesDashboard', { message: 'Fail to register, Pls retry!' })
     // else console.log("Not an administrator");
 })
+
 
 app.get('/index', (req, res) => {
     res.render('index'); 

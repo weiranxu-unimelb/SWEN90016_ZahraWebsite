@@ -6,23 +6,25 @@
     <meta charset="utf-8" />
     <!-- 引入刚刚下载的 ECharts 文件 -->
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style type="text/css">
 
     </style>
-    <!-- <script>
+    <style>
+        #lowInventoryList_1 {
+            display: none;
+        }
+        #lowInventoryList_2 {
+            display: none;
+        }
+        #highInventoryList_1 {
+            display: none;
+        }
+        #highInventoryList_2 {
+            display: none;
+        }
+    </style>
 
-if (isadmin === "False")
-{
-    document.addEventListener("DOMContentLoaded", function() {
-        const contentDiv = document.getElementById("content");
-        const reminderDiv = document.getElementById("reminder");
-
-        // Hide the content and display the reminder note
-        contentDiv.style.display = "none";
-        reminderDiv.style.display = "block";
-    });
-}
-    </script> -->
 
 
 </head>
@@ -33,6 +35,55 @@ if (isadmin === "False")
 
     <div id="content">
 <h1 align="center">Sales Dashboard</h1>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<h1>Test Dashboard</h1>
+    
+    <h2>Top 5 Carpet Items with Low Inventory</h2>
+    <ul>
+        <% for (const item of lowInventoryItems) { %>
+            <li>Name: <%= item.name %> - Quantity: <%= item.quantity %> in stock</li>
+        <% } %>
+    </ul>
+    
+    <h2>Top 5 Carpet Items with High Inventory</h2>
+    <ul>
+        <% for (const item of highInventoryItems) { %>
+            <li>Name: <%= item.name %> - Quantity: <%= item.quantity %> in stock</li>
+        <% } %>
+    </ul>
+    
+    <ul id="lowInventoryList_1">
+        <% for (const item of lowInventoryItems) { %>
+            <li data-item-name="<%= item.name %>"></li>
+        <% } %>
+    </ul>
+
+    <ul id="lowInventoryList_2">
+        <% for (const item of lowInventoryItems) { %>
+            <li data-item-quantity="<%= item.quantity %>"></li>
+        <% } %>
+    </ul>
+
+    <ul id="highInventoryList_1">
+        <% for (const item of highInventoryItems) { %>
+            <li data-item-name="<%= item.name %>"></li>
+        <% } %>
+    </ul>
+
+    <ul id="highInventoryList_2">
+        <% for (const item of highInventoryItems) { %>
+            <li data-item-quantity="<%= item.quantity %>"></li>
+        <% } %>
+    </ul>
+
+    <!-- <div id="plot_1_container">
+        {{ plot_1|safe }}
+    </div> -->
+
+    
+
+    
+    
 <main class="plot">
 <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
     <div style="display:flex;justify-content:center;align-items:center;">
@@ -62,39 +113,53 @@ if (isadmin === "False")
 </div>
 </main>
 
+
     <script type="text/javascript">
+    
+        
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main1'));
+        // 从 html tag 获取低库存数据
+        var lowInventoryList_1 = document.getElementById('lowInventoryList_1');
+        var listItems_1 = lowInventoryList_1.getElementsByTagName('li');
+        var itemNames = [];
+        for (var i = 0; i < listItems_1.length; i++) {
+            var itemName = listItems_1[i].getAttribute('data-item-name');
+            itemNames.push(itemName);
+        }
+        var lowInventoryList_2 = document.getElementById('lowInventoryList_2');
+        var listItems_2 = lowInventoryList_2.getElementsByTagName('li');
+        var quantities = [];
+        for (var i = 0; i < listItems_2.length; i++) {
+            var quantity = parseFloat(listItems_2[i].getAttribute('data-item-quantity'));
+            quantities.push(quantity);
+        }
 
         // 指定图表的配置项和数据
         var option = {
         title: {
-        text: ' Top 5 carpets items (90 days)'
+        text: 'Top 5 Carpet Items with Low Inventory'
     },
             grid: {
                 x: 80,
                 y: 60,
                 x2: 80,
                 y2: 60,
-                // width: {totalWidth} - x - x2,
-                // height: {totalHeight} - y - y2,
                 backgroundColor: 'rgba(0,0,0,0)',
                 borderWidth: 1,
                 borderColor: '#ccc'
             },
         tooltip: {},
-        legend: {
-        data: ['销量']
-    },
         xAxis: {
-        data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+        data: itemNames
+        
     },
         yAxis: {},
         series: [
     {
-        name: '销量',
+        name: 'Quantity: ',
         type: 'bar',
-        data: [5, 20, 36, 10, 10, 20]
+        data: quantities
     }
         ]
 
@@ -102,38 +167,51 @@ if (isadmin === "False")
 
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
+
+        
         var myChart2 = echarts.init(document.getElementById('main2'));
+         // 从 html tag 获取高库存数据
+        var highInventoryList_1 = document.getElementById('highInventoryList_1');
+        var listItems_1_high = highInventoryList_1.getElementsByTagName('li');
+        var itemNames_high = [];
+        for (var i = 0; i < listItems_1_high.length; i++) {
+            var itemName_high = listItems_1_high[i].getAttribute('data-item-name');
+            itemNames_high.push(itemName_high);
+        }
+        var highInventoryList_2 = document.getElementById('highInventoryList_2');
+        var listItems_2_high = highInventoryList_2.getElementsByTagName('li');
+        var quantities_high = [];
+        for (var i = 0; i < listItems_2_high.length; i++) {
+            var quantity_high = parseFloat(listItems_2_high[i].getAttribute('data-item-quantity'));
+            quantities_high.push(quantity_high);
+        }
 
         // 指定图表的配置项和数据
         var option2 = {
             title: {
-                text: 'Top 5 Carpet Item categories (90 days)'
+                text: 'Top 5 Carpet Items with High Inventory'
             },
             grid: {
                 x: 80,
                 y: 60,
                 x2: 80,
                 y2: 60,
-                // width: {totalWidth} - x - x2,
-                // height: {totalHeight} - y - y2,
                 backgroundColor: 'rgba(255,255,0,0)',
                 borderWidth: 1,
                 borderColor: '#ccc'
             },
             tooltip: {},
-            legend: {
-                data: ['销量']
-            },
+
             xAxis: {
-                data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+                data: itemNames_high
             },
             yAxis: {},
             series: [
-                {
-                    name: '销量',
-                    type: 'bar',
-                    data: [5, 20, 36, 10, 10, 20]
-                }
+            {
+                name: 'Quantity: ',
+                type: 'bar',
+                data: quantities_high
+            }
             ]
         };
 
