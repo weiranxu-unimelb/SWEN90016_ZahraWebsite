@@ -26,20 +26,15 @@
     <label for="billingAddress">Billing Address:</label>
     <input type="text" id="billingAddress" readonly>-->
 
-    <p>Customer Name:</p>
-    <p><%= firstCustomer ? firstCustomer.name : 'No customer available' %></p>
+    <p>User Name:</p>
+    <p><%= user ? user.username : 'No logged in customer available' %></p>
 
-    <p>Email:</p>
-    <p><%= firstCustomer ? firstCustomer.email : 'No customer available' %></p>
+    <p>User Role:</p>
+    <p><%= user ? user.role : 'No logged in customer available' %></p>
 
-    <p>Phone Number:</p>
-    <p><%= firstCustomer ? firstCustomer.primaryContact : 'No customer available' %></p>
 
-    <p>Shipping Address:</p>
-    <p><%= firstCustomer ? firstCustomer.shippingAddress : 'No customer available' %></p>
 
-    <p>Billing Address:</p>
-    <p><%= firstCustomer ? firstCustomer.billingAddress : 'No customer available' %></p>
+
 
     
 

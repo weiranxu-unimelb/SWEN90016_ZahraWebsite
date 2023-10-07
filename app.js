@@ -3,11 +3,22 @@ const express = require('express');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const path = require('path');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken')
+
 
 // Initialize the app.
 const app = express();
+
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
+
+app.use(session({
+    secret: 'your-secret-key', // Change this to a secure secret key
+    resave: false,
+    saveUninitialized: true,
+  }));
 
 // DB connect code for 'mongoose' package.
 const uri = "mongodb+srv://weiranx1:weiranxu123@swen90016.kohjae3.mongodb.net/Zahra_Data?retryWrites=true&w=majority";
@@ -50,7 +61,9 @@ const uploadPDF = multer({ storage: storage_PDF, });
 app.set('view engine', 'ejs');
 // Router
 app.get('/', (req, res) => {
-    res.render('index');
+    // Pass the message variable as null (or a default value) initially
+    const message = '';
+    res.render('login', { message });
 });
 
 app.get('/customer', (req, res) => {
@@ -305,31 +318,67 @@ const checkoutSchema = new mongoose.Schema({
 const Checkout = mongoose.model('Checkout', checkoutSchema);
 
 //module.exports = Checkout;
-
-// Just assume the Logged in Customer to be the first in Customer list
+// Updated Checkout Page
 app.get('/checkout', async (req, res) => {
     try {
-        const customers = await Customer.find();
-        const firstCustomer = customers.length > 0 ? customers[0] : null;
+      // Check if a user is logged in
+      if (!req.session.user) {
+        return res.status(401).render('login'); // Redirect to the login page if not logged in
+      }
+  
+      // Access user information from the session
+        const user = req.session.user;
         const currentDate = new Date().toLocaleDateString();
         const carpetItems = await CarpetItem.find();
         const carpetKitItems = await CarpetKitItem.find();
         const combinedItems = [...carpetKitItems, ...carpetItems]; // Merge into a single array
-
-
-        res.render('checkout', {
-            // Parameter to be transmitted
-            firstCustomer: firstCustomer,
-            currentDate: currentDate,
-            carpetItems: carpetItems,
-            carpetKitItems: carpetKitItems,
-            combinedItems: combinedItems
-        });
+  
+      // Continue with your existing code to fetch other data like carpet items, etc.
+  
+      // Render the 'checkout' page with the user's information
+      res.render('checkout', {
+        user: user,
+        currentDate: currentDate,
+        carpetItems: carpetItems,
+        carpetKitItems: carpetKitItems,
+        combinedItems: combinedItems
+      });
     } catch (error) {
-        console.log('Failed to show customer information', error);
-        res.render('checkout_error');
+      console.log('Failed to show customer information', error);
+      res.render('checkout_error');
     }
-});
+  });
+
+  
+  
+  
+  
+  
+
+// Just assume the Logged in Customer to be the first in Customer list
+// app.get('/checkout', async (req, res) => {
+//     try {
+//         const customers = await Customer.find();
+//         const firstCustomer = customers.length > 0 ? customers[0] : null;
+//         const currentDate = new Date().toLocaleDateString();
+//         const carpetItems = await CarpetItem.find();
+//         const carpetKitItems = await CarpetKitItem.find();
+//         const combinedItems = [...carpetKitItems, ...carpetItems]; // Merge into a single array
+
+
+//         res.render('checkout', {
+//             // Parameter to be transmitted
+//             firstCustomer: firstCustomer,
+//             currentDate: currentDate,
+//             carpetItems: carpetItems,
+//             carpetKitItems: carpetKitItems,
+//             combinedItems: combinedItems
+//         });
+//     } catch (error) {
+//         console.log('Failed to show customer information', error);
+//         res.render('checkout_error');
+//     }
+// });
 
 
 //const Checkout = require('./models/checkout'); // Replace with the actual path to your Checkout model
@@ -363,6 +412,156 @@ app.post('/checkout', async (req, res) => {
         });
 
 });
+
+
+
+
+const userSchema = mongoose.Schema({
+    username: String,
+    password: String,
+    role: {
+        type: String,
+        enum: ['user', 'admin'], // 'user' 表示一般用户，'admin' 表示管理员
+        default: 'user' // 默认为一般用户
+    }
+});
+const User = mongoose.model('User', userSchema);
+
+
+// 登录路由
+// 处理登录表单提交
+const SECRET = "fdfhfjdfdjfdjerwrereresaassa2dd@ddds"
+// let isAdminUser = false;
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    let message = ''; // 初始化 message 变量为空
+
+    try {
+        const user = await User.findOne({ username: username });
+
+        if (!user) {
+            message = '用户不存在';
+            //return res.status(422).send({
+            //    message: 'Invalid User'
+            //})
+            return res.status(422).render('login_error')
+        } else if (user.password !== password) {
+            //return res.status(422).send({
+            //    message: 'Incorrect Password'
+            //})
+            return res.status(422).render('login_error')
+        } else {
+            // 用户验证成功，可以进行登录操作
+            // 例如，设置用户的登录状态或创建会话等
+            //req.session.user = user; // 存储用户信息到会话
+            const token = jwt.sign({
+                id: String(user._id),
+            }, SECRET)
+
+            // After successfully authenticating the user, store their information in the session
+            req.session.user = {
+                id: user._id,
+                username: user.username,
+                role: user.role,
+              };
+            //req.session.auth_username=user.username;
+            //req.session.auth_password=user.password;
+            //res.cookie('username',user.username, {maxAge:1000 * 60 * 60 * 24 * 7,signed:true});
+            //res.cookie('password',user.password, {maxAge: 1000 * 60 * 60 * 24 * 7,signed:true})
+            return res.status(200).render('index');
+
+        }
+    } catch (error) {
+        console.error('Failed to log in', error);
+        message = '登录失败';
+    }
+
+    // 无论成功还是失败，都传递 message 变量给模板
+    res.render('login', { message });
+});
+
+
+// 注销路由
+app.get('/logout', (req, res) => {
+    // 清除用户的登录状态或会话信息
+    req.session.destroy((err) => {
+        if (err) {
+            console.log('Failed to log out', err);
+        }
+        res.render('logout_success');
+    });
+});
+
+// 注册页面
+app.get('/register', (req, res) => {
+    res.render('register');
+});
+
+// 处理注册表单提交
+app.post('/register', async (req, res) => {
+    const { username, password, adminKey } = req.body;
+    let newUser; // 声明 newUser 变量在条件之外的作用域
+
+    // 检查是否输入了管理员密钥
+    if (adminKey === '12345678') {
+        // 输入了正确的管理员密钥，将用户角色设置为管理员
+        newUser = new User({
+            username: username,
+            password: password,
+            role: 'admin' // 设置用户为管理员
+        });
+    } else {
+        // 未输入管理员密钥或输入错误，将用户角色设置为一般用户
+        newUser = new User({
+            username: username,
+            password: password,
+            role: 'user' // 设置用户为一般用户
+        });
+    }
+
+    try {
+        await newUser.save();
+        res.render('login');
+    } catch (error) {
+        console.error('Failed to register user', error);
+
+        res.render('registration_error', { message: 'Fail to register, Pls retry!' });
+    }
+});
+
+// 登录页面
+app.get('/login', (req, res) => {
+    const message = ''; // 初始化 message 变量为空
+    res.send(req.params);
+    res.render('login'); // 传递 message 变量给模板
+});
+
+
+// 注销
+app.get('/logout', (req, res) => {
+    // 清除用户的登录状态或会话信息
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Failed to log out', err);
+        }
+        res.render('logout_success');
+    });
+});
+
+app.get('/login_error', (req, res) => {
+    const message = 'Invalid username or password'; // Customize the error message
+    res.render('login_error', { message });
+});
+
+app.get('/salesDashboard', (req, res)=> {
+    if(req.session.user.role == 'admin') res.render('salesDashboard')
+    else console.log("Not an administrator");
+})
+
+app.post('/salesDashboard', (req, res)=> {
+    if(req.session.user.role == 'admin') res.render('salesDashboard')
+    else console.log("Not an administrator");
+})
 
 
 

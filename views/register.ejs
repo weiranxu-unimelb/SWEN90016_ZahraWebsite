@@ -1,0 +1,23 @@
+<!-- register.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+<h1>Register</h1>
+<form method="post" action="/register">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br>
+    <button type="submit">Register</button>
+
+    <div>
+        <label for="adminKey">Admin Register? Enter Admin Key</label>
+        <input type="text" id="adminKey" name="adminKey" placeholder="Optional admin key here">
+    </div>
+</form>
+</body>
+</html>

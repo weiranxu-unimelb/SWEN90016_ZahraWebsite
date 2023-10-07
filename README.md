@@ -14,3 +14,4 @@
 - Mongoose
 - EJS
 - Multer
+- express-session
