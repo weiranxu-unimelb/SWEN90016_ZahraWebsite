@@ -61,6 +61,8 @@
 
 </div>
 
+<div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
+    <div >
         <h2>Top 5 Carpet Items with Low Inventory</h2>
         <ul>
             <% lowInventoryItems.forEach(function(item){%>
@@ -68,14 +70,17 @@
                     Carpet Name: <%= item.name %> - Quantity: <%= item.quantity %> in stock
                 </li>
             <% })%>
-        </ul>
-    
-    <h2>Top 5 Carpet Items with High Inventory</h2>
-    <ul>
-        <% for (const item of highInventoryItems) { %>
-            <li>Carpet Name: <%= item.name %> - Quantity: <%= item.quantity %> in stock</li>
-        <% } %>
-    </ul>
+        </ul>    </div>
+    <div style="margin-right:20px;"></div>
+    <div >
+        <h2>Top 5 Carpet Items with High Inventory</h2>
+        <ul>
+            <% for (const item of highInventoryItems) { %>
+                <li>Carpet Name: <%= item.name %> - Quantity: <%= item.quantity %> in stock</li>
+            <% } %>
+        </ul>    </div>
+
+</div>
 
     <ul id="lowInventoryList_1">
         <% for (const item of lowInventoryItems) { %>
