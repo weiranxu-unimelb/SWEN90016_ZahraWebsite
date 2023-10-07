@@ -349,39 +349,6 @@ app.get('/checkout', async (req, res) => {
     }
   });
 
-  
-  
-  
-  
-  
-
-// Just assume the Logged in Customer to be the first in Customer list
-// app.get('/checkout', async (req, res) => {
-//     try {
-//         const customers = await Customer.find();
-//         const firstCustomer = customers.length > 0 ? customers[0] : null;
-//         const currentDate = new Date().toLocaleDateString();
-//         const carpetItems = await CarpetItem.find();
-//         const carpetKitItems = await CarpetKitItem.find();
-//         const combinedItems = [...carpetKitItems, ...carpetItems]; // Merge into a single array
-
-
-//         res.render('checkout', {
-//             // Parameter to be transmitted
-//             firstCustomer: firstCustomer,
-//             currentDate: currentDate,
-//             carpetItems: carpetItems,
-//             carpetKitItems: carpetKitItems,
-//             combinedItems: combinedItems
-//         });
-//     } catch (error) {
-//         console.log('Failed to show customer information', error);
-//         res.render('checkout_error');
-//     }
-// });
-
-
-//const Checkout = require('./models/checkout'); // Replace with the actual path to your Checkout model
 
 app.post('/checkout', async (req, res) => {
     //const { quantity, totalCost, preferredPaymentMethod, deliveryInstructions, purchaseOrderDate, orderNumber, orderTotal, salesRepresentativeName, orderStatus, additionalNotes } = req.body;
