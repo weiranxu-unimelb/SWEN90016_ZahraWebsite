@@ -9,8 +9,29 @@
     <style type="text/css">
 
     </style>
+    <!-- <script>
+
+if (isadmin === "False")
+{
+    document.addEventListener("DOMContentLoaded", function() {
+        const contentDiv = document.getElementById("content");
+        const reminderDiv = document.getElementById("reminder");
+
+        // Hide the content and display the reminder note
+        contentDiv.style.display = "none";
+        reminderDiv.style.display = "block";
+    });
+}
+    </script> -->
+
+
 </head>
 <body>
+    <div id="reminder" style="display:none;">
+        <p>Only Administrators are authorized for this page!</p>
+    </div>
+
+    <div id="content">
 <h1 align="center">Sales Dashboard</h1>
 <main class="plot">
 <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
@@ -31,6 +52,14 @@
         <input id="xAxis2" value="{{@xAxis}}" type="hidden" />
         <input id="series2" value="{{@series}}" type="hidden" />
     </div>
+    <br><br>
+    <button type="button" onclick="window.location.href = '/index'">Back to Home</button>
+    <br><br>
+    <button type="button" onclick="window.location.href = '/'">Log Out</button>
+
+    
+
+</div>
 </main>
 
     <script type="text/javascript">
@@ -164,6 +193,7 @@
 
         // 使用刚指定的配置项和数据显示图表。
         myChart4.setOption(option4);
+    
     </script>
 </body>
 </html>

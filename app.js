@@ -457,7 +457,7 @@ app.get('/logout', (req, res) => {
         if (err) {
             console.log('Failed to log out', err);
         }
-        res.render('logout_success');
+        res.render('login');
     });
 });
 
@@ -513,7 +513,7 @@ app.get('/logout', (req, res) => {
         if (err) {
             console.error('Failed to log out', err);
         }
-        res.render('logout_success');
+        res.render('login');
     });
 });
 
@@ -522,17 +522,32 @@ app.get('/login_error', (req, res) => {
     res.render('login_error', { message });
 });
 
-app.get('/salesDashboard', (req, res)=> {
-    if(req.session.user.role == 'admin') res.render('salesDashboard')
-    else console.log("Not an administrator");
+app.get('/salesDashboard', (req, res) => {
+    const user = req.session.user;
+    if (user.role == 'admin') {
+        res.render('salesDashboard');
+    } else {
+        res.render('salesDashboard_user');
+        console.log("Not an administrator");
+    }
+    
 })
 
-app.post('/salesDashboard', (req, res)=> {
-    if(req.session.user.role == 'admin') res.render('salesDashboard')
-    else console.log("Not an administrator");
+app.post('/salesDashboard', (req, res) => {
+    const user = req.session.user;
+    if (user.role == 'admin') {
+        res.render('salesDashboard');
+    } else {
+        res.render('salesDashboard_user');
+        console.log("Not an administrator");
+    }
+    // if(req.session.user.role == 'admin') res.render('salesDashboard', { message: 'Fail to register, Pls retry!' })
+    // else console.log("Not an administrator");
 })
 
-
+app.get('/index', (req, res) => {
+    res.render('index'); 
+});
 
 // Run the server.
 const port = process.env.PORT || 8080;
