@@ -6,10 +6,9 @@ const path = require('path');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken')
-// Learn about API authentication here: https://plotly.com/nodejs/getting-started
+
 // Find your api_key here: https://plotly.com/settings/api
-//username, api_key 
-var plotly = require('plotly')('zhihanzhang81', 'iw6gdoMZ6iJ7Ob1Vpkum');
+// var plotly = require('plotly')('zhihanzhang81', 'iw6gdoMZ6iJ7Ob1Vpkum'); //username, api_key 
 
 
 
@@ -311,7 +310,9 @@ const cart = [];
 
 const checkoutSchema = new mongoose.Schema({
     // TODO: add the schema of selectedItems / selectedKits
-    quantity: Number,
+    itemList: [String],
+    itemList_name: [String], 
+    itemList_category: [String],
     totalCost: Number,
     preferredPaymentMethod: String,
     deliveryInstructions: String,
@@ -324,6 +325,8 @@ const checkoutSchema = new mongoose.Schema({
 });
 
 const Checkout = mongoose.model('Checkout', checkoutSchema);
+
+
 
 //module.exports = Checkout;
 // Updated Checkout Page
@@ -365,8 +368,9 @@ app.post('/checkout', async (req, res) => {
 
     // Create a new checkout document
     const newCheckout = new Checkout({
-
-        quantity: req.body.quantity,
+        itemList: req.body.itemList,
+        itemList_name: req.body.itemList_name,  // Current purchased Item's name
+        itemList_category: req.body.itemList_category, // Current purchased Item's category
         totalCost: req.body.totalCost,
         preferredPaymentMethod: req.body.preferredPaymentMethod,
         deliveryInstructions: req.body.deliveryInstructions,
@@ -375,7 +379,7 @@ app.post('/checkout', async (req, res) => {
         discounts: req.body.discounts,
         salesRepresentativeName: req.body.salesRepresentative,
         orderStatus: req.body.orderStatus,
-        additionalNotes: req.body.additionalNotes
+        additionalNotes: req.body.customerNotes
     });
 
     newCheckout.save()
@@ -423,9 +427,6 @@ app.post('/login', async (req, res) => {
             //})
             return res.status(422).render('login_error')
         } else if (user.password !== password) {
-            //return res.status(422).send({
-            //    message: 'Incorrect Password'
-            //})
             return res.status(422).render('login_error')
         } else {
             // 用户验证成功，可以进行登录操作
@@ -543,7 +544,7 @@ app.get('/login_error', (req, res) => {
 
 
 
-//Analytics Dashboard (for Testing)
+//Analytics Dashboard
 app.get('/salesDashboard', async (req, res) => {
     try {
         const user = req.session.user;
@@ -551,22 +552,40 @@ app.get('/salesDashboard', async (req, res) => {
             // Fetch Top 5 carpet items with low/high inventory
             const lowInventoryItems = await CarpetItem.find().sort({ quantity: 1 }).limit(5);
             const highInventoryItems = await CarpetItem.find().sort({ quantity: -1 }).limit(5);
+            
+            // await Checkout.deleteMany({}); // ! Delete all current Checkout records
+            // const totalCosts = checkout_list.map((checkout) => checkout.totalCost);
 
-            // var data = [
-            // {
-            //     x: ["giraffes", "orangutans", "monkeys"],
-            //     y: [20, 14, 23],
-            //     type: "bar"
-            // }
-            // ];
-            // var graphOptions = { filename: "basic-bar", fileopt: "overwrite" };
-            // var plot_1 = Plotly.newPlot('plot_1', data, graphOptions);
-            // var plot_1_html = await plot_1.toHtml();
-              
+            // Fetch Top 5 sold Name/Category
+            const checkout_list = await Checkout.find();
+            console.log(checkout_list);
+            const combinedItemList = checkout_list
+            .map(item => item.itemList_name[0]) // Extract the only element of each array
+            .filter(item => item && item !== '[]') // Filter out empty and '[]' strings
+            .flatMap(item => item.split(',')) 
+                .map(item => item.trim());
+            
+            // Fetch Top 5 sold Name Dictionary ({"name": ; "count": })
+            const top5KitNames = findTop5FrequentKitNames(combinedItemList);
+
+            const combinedItemList_cate = checkout_list
+            .map(item => item.itemList_category[0]) 
+            .filter(item => item && item !== '[]')
+            .flatMap(item => item.split(',')) 
+                .map(item => item.trim()); 
+            
+            // Fetch Top 5 sold Category Dictionary [ { name: '65183', count: 2 }, { name: 'NaN', count: 2 } ]
+            const top5KitCates = findTop5FrequentKitNames(combinedItemList_cate);
+            console.log(top5KitCates); // Use for debugging
+
+            
 
             res.render('salesDashboard', {
                 lowInventoryItems: lowInventoryItems,
                 highInventoryItems: highInventoryItems,
+                checkout_list: checkout_list,
+                sold_name_json: top5KitNames,
+                sold_cate_json: top5KitCates, 
                 //plot_1: plot_1_html
             });
         } else {
@@ -601,35 +620,41 @@ app.post('/salesDashboard_pie', (req, res) => {
         res.render('salesDashboard_user');
         console.log("Not an administrator");
     }
-    // if(req.session.user.role == 'admin') res.render('salesDashboard', { message: 'Fail to register, Pls retry!' })
-    // else console.log("Not an administrator");
 })
 
 app.get('/salesDashboard_pie', async (req, res) => {
     try {
         const user = req.session.user;
         if (user.role == 'admin') {
-            // Fetch Top 5 carpet items with low/high inventory
             const lowInventoryItems = await CarpetItem.find().sort({ quantity: 1 }).limit(5);
             const highInventoryItems = await CarpetItem.find().sort({ quantity: -1 }).limit(5);
+            // Fetch Top 5 sold Name/Category
+            const checkout_list = await Checkout.find();
+            const combinedItemList = checkout_list
+            .map(item => item.itemList_name[0]) 
+            .filter(item => item && item !== '[]') 
+            .flatMap(item => item.split(',')) 
+            .map(item => item.trim());
+            const top5KitNames = findTop5FrequentKitNames(combinedItemList);
 
-            // var data = [
-            // {
-            //     x: ["giraffes", "orangutans", "monkeys"],
-            //     y: [20, 14, 23],
-            //     type: "bar"
-            // }
-            // ];
-            // var graphOptions = { filename: "basic-bar", fileopt: "overwrite" };
-            // var plot_1 = Plotly.newPlot('plot_1', data, graphOptions);
-            // var plot_1_html = await plot_1.toHtml();
-
+            const combinedItemList_cate = checkout_list
+            .map(item => item.itemList_category[0]) 
+            .filter(item => item && item !== '[]')
+            .flatMap(item => item.split(',')) 
+            .map(item => item.trim()); 
+            
+            const top5KitCates = findTop5FrequentKitNames(combinedItemList_cate);
+            console.log(top5KitCates);
 
             res.render('salesDashboard_pie', {
                 lowInventoryItems: lowInventoryItems,
                 highInventoryItems: highInventoryItems,
-                //plot_1: plot_1_html
+                checkout_list: checkout_list,
+                sold_name_json: top5KitNames,
+                sold_cate_json: top5KitCates, 
             });
+
+
         } else {
             res.render('salesDashboard_user');
             console.log("Not an administrator");
@@ -652,3 +677,27 @@ const port = process.env.PORT || 8080;
 app.listen(port, () => {
     console.log('Server runs at port ' + port);
 });
+
+
+// Find top 5 counts of array
+function findTop5FrequentKitNames(combinedItemList) {
+    const kitNameCounts = {};
+    combinedItemList.forEach(item => {
+      if (item && item !== '') {
+        kitNameCounts[item] = (kitNameCounts[item] || 0) + 1;
+      }
+    });
+    const kitNameCountsArray = Object.entries(kitNameCounts).map(([name, count]) => ({
+      name,
+      count,
+    }));
+  
+    // Sort the array by count in descending order
+    kitNameCountsArray.sort((a, b) => b.count - a.count);
+  
+    // Get the top 5 frequently occurred kit names
+    const top5KitNames = kitNameCountsArray.slice(0, 5);
+    return top5KitNames;
+  }
+  
+  
