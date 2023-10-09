@@ -4,12 +4,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Dashboard</title>
     <meta charset="utf-8" />
-    <!-- 引入刚刚下载的 ECharts 文件 -->
+    <!-- Import ECharts -->
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style type="text/css">
 
     </style>
+    <!-- Disable the display of data list -->
     <style>
         #lowInventoryList_1 {
             display: none;
@@ -21,6 +22,18 @@
             display: none;
         }
         #highInventoryList_2 {
+            display: none;
+        }
+        #sold_name_json_1 {
+            display: none;
+        }
+        #sold_name_json_2 {
+            display: none;
+        }
+        #sold_cate_json_1 {
+            display: none;
+        }
+        #sold_cate_json_2 {
             display: none;
         }
     </style>
@@ -49,10 +62,11 @@
 
 
     <h4 align="center">Choose Type</h4>
-    <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;"">
+    <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
     <div >
         <button type="button" onclick="window.location.href = '/salesDashboard'">Bar Charts</button>
     </div>
+
     <div style="margin-right:20px;"></div>
 
     <div >
@@ -61,8 +75,30 @@
 
 </div>
 
+    <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
+        <div>
+            <h2>Top 5 Carpet Item Sold</h2>
+            <ul>
+                <% sold_name_json.forEach(function(item){%>
+                    <li>
+                        Carpet Name: <%= item.name %> - Sold: <%= item.count %> Pieces
+                    </li>
+                <% })%>
+            </ul>    </div>
+        <div style="margin-right:20px;"></div>
+        <div >
+            <h2>Top 5 Carpet Item Categories Sold</h2>
+            <ul>
+                <% for (const item of sold_cate_json) { %>
+                    <li>Category Name: <%= item.name %> - Sold: <%= item.count %> Pieces</li>
+                <% } %>
+            </ul>    </div>
+
+    </div>
+
 <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
     <div >
+
         <h2>Top 5 Carpet Items with Low Inventory</h2>
         <ul>
             <% lowInventoryItems.forEach(function(item){%>
@@ -70,7 +106,8 @@
                     Carpet Name: <%= item.name %> - Quantity: <%= item.quantity %> in stock
                 </li>
             <% })%>
-        </ul>    </div>
+        </ul>    
+    </div>
     <div style="margin-right:20px;"></div>
     <div >
         <h2>Top 5 Carpet Items with High Inventory</h2>
@@ -81,6 +118,8 @@
         </ul>    </div>
 
 </div>
+
+
 
     <ul id="lowInventoryList_1">
         <% for (const item of lowInventoryItems) { %>
@@ -107,13 +146,37 @@
         <% } %>
     </ul>
 
-    <!-- <div id="plot_1_container">
-        {{ plot_1|safe }}
-    </div> -->
+    <ul id="sold_name_json_1">
+        <% for (const item of sold_name_json) { %>
+            <li data-item-name="<%= item.name %>">Sold Name: <%= item.name %></li>
+        <% } %>
+    </ul>
+    
+    <ul id="sold_name_json_2">
+        <% for (const item of sold_name_json) { %>
+            <li data-item-count="<%= item.count %>">Sold Count: <%= item.count %></li>
+        <% } %>
+    </ul>
+
+    <ul id="sold_cate_json_1">
+        <% for (const item of sold_cate_json) { %>
+            <li data-item-name="<%= item.name %>">Sold Category: <%= item.name %></li>
+        <% } %>
+    </ul>
+    
+    <ul id="sold_cate_json_2">
+        <% for (const item of sold_cate_json) { %>
+            <li data-item-count="<%= item.count %>">Sold Count: <%= item.count %></li>
+        <% } %>
+    </ul>
+    
+
+
 
     
 <main class="plot">
-<!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+    
+
     <div style="display:flex;justify-content:center;align-items:center;">
 <div id="main1" style="width: 700px;height:500px;"></div>
 <input id="xAxis" value="{{@xAxis}}" type="hidden" />
@@ -140,11 +203,11 @@
 
 
     <script type="text/javascript">
-    
-        
-        // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('main1'));
-        // 从 html tag 获取低库存数据
+
+        // Plot 1
+        var myChart = echarts.init(document.getElementById('main3'));
+        // Get the Item Name and corresponding Inventory
+        // Plot them in bar plots
         var lowInventoryList_1 = document.getElementById('lowInventoryList_1');
         var listItems_1 = lowInventoryList_1.getElementsByTagName('li');
         var itemNames = [];
@@ -160,7 +223,6 @@
             quantities.push(quantity);
         }
 
-        // 指定图表的配置项和数据
         var option = {
         title: {
         text: 'Top 5 Carpet Items with Low Inventory'
@@ -190,12 +252,10 @@
 
     };
 
-        // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
 
-        
-        var myChart2 = echarts.init(document.getElementById('main2'));
-         // 从 html tag 获取高库存数据
+        // Plot 2
+        var myChart2 = echarts.init(document.getElementById('main4'));
         var highInventoryList_1 = document.getElementById('highInventoryList_1');
         var listItems_1_high = highInventoryList_1.getElementsByTagName('li');
         var itemNames_high = [];
@@ -240,96 +300,97 @@
             ]
         };
 
-        // 使用刚指定的配置项和数据显示图表。
         myChart2.setOption(option2);
 
-        // 基于准备好的dom，初始化echarts实例
-        var myChart3 = echarts.init(document.getElementById('main3'));
-        var lowInventoryList_1 = document.getElementById('lowInventoryList_1');
-        var listItems_1 = lowInventoryList_1.getElementsByTagName('li');
-        var itemNames = [];
-        for (var i = 0; i < listItems_1.length; i++) {
-            var itemName = listItems_1[i].getAttribute('data-item-name');
-            itemNames.push(itemName);
+        // Plot 3
+        // Get the Top 5 Sold Item Name and corresponding Count
+        // Plot them in bar plots
+
+        var myChart3 = echarts.init(document.getElementById('main2'));
+
+        var sold_cate_json_1 = document.getElementById('sold_cate_json_1');
+        var sold_cates_tmp = sold_cate_json_1.getElementsByTagName('li');
+        var sold_cates = [];
+        for (var i = 0; i < sold_cates_tmp.length; i++) {
+            var sold_cate = sold_cates_tmp[i].getAttribute('data-item-name');
+            sold_cates.push(sold_cate);
         }
-        var lowInventoryList_2 = document.getElementById('lowInventoryList_2');
-        var listItems_2 = lowInventoryList_2.getElementsByTagName('li');
-        var quantities = [];
-        for (var i = 0; i < listItems_2.length; i++) {
-            var quantity = parseFloat(listItems_2[i].getAttribute('data-item-quantity'));
-            quantities.push(quantity);
+        var sold_cate_json_2 = document.getElementById('sold_cate_json_2');
+        var sold_counts_tmp_cate = sold_cate_json_2.getElementsByTagName('li');
+        var sold_counts_cate = [];
+        for (var i = 0; i < sold_counts_tmp_cate.length; i++) {
+            var sold_c_cate = sold_counts_tmp_cate[i].getAttribute('data-item-count');
+            sold_counts_cate.push(sold_c_cate);
         }
-        // 指定图表的配置项和数据
+
         var option3 = {
             title: {
-                text: 'Top 5 Carpet Items with Low Inventory'
+                text: 'Top 5 Carpet Item categories Sold'
             },
             tooltip: {},
             legend: {
                 x:'right',
                 y:'top',
                 padding:[0,50,0,0],
-                data: ['Inventory']
+                data: ['Sold Item']
             },
             xAxis: {
-                data: itemNames
+                data: sold_cates
             },
             yAxis: {},
             series: [
                 {
-                    name: 'Inventory',
+                    name: 'Sold Category',
                     type: 'bar',
-                    data: quantities
+                    data: sold_counts_cate
                 }
             ]
         };
 
-        // 使用刚指定的配置项和数据显示图表。
         myChart3.setOption(option3);
+        // Plot 4
 
-        var myChart4 = echarts.init(document.getElementById('main4'));
+        var myChart4 = echarts.init(document.getElementById('main1'));
 
-        var highInventoryList_1 = document.getElementById('highInventoryList_1');
-        var listItems_1_high = highInventoryList_1.getElementsByTagName('li');
-        var itemNames_high = [];
-        for (var i = 0; i < listItems_1_high.length; i++) {
-            var itemName_high = listItems_1_high[i].getAttribute('data-item-name');
-            itemNames_high.push(itemName_high);
+        var sold_name_json_1 = document.getElementById('sold_name_json_1');
+        var sold_names_tmp = sold_name_json_1.getElementsByTagName('li');
+        var sold_names = [];
+        for (var i = 0; i < sold_names_tmp.length; i++) {
+            var sold_name = sold_names_tmp[i].getAttribute('data-item-name');
+            sold_names.push(sold_name);
         }
-        var highInventoryList_2 = document.getElementById('highInventoryList_2');
-        var listItems_2_high = highInventoryList_2.getElementsByTagName('li');
-        var quantities_high = [];
-        for (var i = 0; i < listItems_2_high.length; i++) {
-            var quantity_high = parseFloat(listItems_2_high[i].getAttribute('data-item-quantity'));
-            quantities_high.push(quantity_high);
+        var sold_name_json_2 = document.getElementById('sold_name_json_2');
+        var sold_counts_tmp = sold_name_json_2.getElementsByTagName('li');
+        var sold_counts = [];
+        for (var i = 0; i < sold_counts_tmp.length; i++) {
+            var sold_count = sold_counts_tmp[i].getAttribute('data-item-count');
+            sold_counts.push(sold_count);
         }
 
-        // 指定图表的配置项和数据
         var option4 = {
             title: {
-                text: 'Top 5 Carpet Items with High Inventory'
+                text: 'Top 5 Carpets Items Sold'
             },
             tooltip: {},
             legend: {
                 x:'right',
                 y:'top',
                 padding:[0,50,0,0],
-                data: ['Inventory']
+                data: ['Sold Item']
             },
             xAxis: {
-                data: itemNames_high
+                data: sold_names
             },
             yAxis: {},
             series: [
                 {
-                    name: 'Inventory',
+                    name: 'Sold Counts',
                     type: 'bar',
-                    data: quantities_high
+                    data: sold_counts
                 }
             ]
         };
 
-        // 使用刚指定的配置项和数据显示图表。
         myChart4.setOption(option4);
     
     </script>

@@ -23,6 +23,18 @@
         #highInventoryList_2 {
             display: none;
         }
+        #sold_name_json_1 {
+            display: none;
+        }
+        #sold_name_json_2 {
+            display: none;
+        }
+        #sold_cate_json_1 {
+            display: none;
+        }
+        #sold_cate_json_2 {
+            display: none;
+        }
     </style>
 
 
@@ -61,7 +73,26 @@
 
         </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
+        <div>
+            <h2>Top 5 Carpet Item Sold</h2>
+            <ul>
+                <% sold_name_json.forEach(function(item){%>
+                    <li>
+                        Carpet Name: <%= item.name %> - Sold: <%= item.count %> Pieces
+                    </li>
+                <% })%>
+            </ul>    </div>
+        <div style="margin-right:20px;"></div>
+        <div >
+            <h2>Top 5 Carpet Item Categories Sold</h2>
+            <ul>
+                <% for (const item of sold_cate_json) { %>
+                    <li>Category Name: <%= item.name %> - Sold: <%= item.count %> Pieces</li>
+                <% } %>
+            </ul>    </div>
 
+    </div>
     <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
     <div >
         <h2>Top 5 Carpet Items with Low Inventory</h2>
@@ -108,9 +139,31 @@
         <% } %>
     </ul>
 
-    <!-- <div id="plot_1_container">
-        {{ plot_1|safe }}
-    </div> -->
+    <ul id="sold_name_json_1">
+        <% for (const item of sold_name_json) { %>
+            <li data-item-name="<%= item.name %>">Sold Name: <%= item.name %></li>
+        <% } %>
+    </ul>
+    
+    <ul id="sold_name_json_2">
+        <% for (const item of sold_name_json) { %>
+            <li data-item-count="<%= item.count %>">Sold Count: <%= item.count %></li>
+        <% } %>
+    </ul>
+
+    <ul id="sold_cate_json_1">
+        <% for (const item of sold_cate_json) { %>
+            <li data-item-name="<%= item.name %>">Sold Category: <%= item.name %></li>
+        <% } %>
+    </ul>
+    
+    <ul id="sold_cate_json_2">
+        <% for (const item of sold_cate_json) { %>
+            <li data-item-count="<%= item.count %>">Sold Count: <%= item.count %></li>
+        <% } %>
+    </ul>
+
+
 
     
 
@@ -149,50 +202,65 @@
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main1'));
         // 从 html tag 获取低库存数据
-        var lowInventoryList_1 = document.getElementById('lowInventoryList_1');
-        var listItems_1 = lowInventoryList_1.getElementsByTagName('li');
-        var itemNames = [];
-        for (var i = 0; i < listItems_1.length; i++) {
-            var itemName = listItems_1[i].getAttribute('data-item-name');
-            itemNames.push(itemName);
-        }
-        var lowInventoryList_2 = document.getElementById('lowInventoryList_2');
-        var listItems_2 = lowInventoryList_2.getElementsByTagName('li');
-        var quantities = [];
-        for (var i = 0; i < listItems_2.length; i++) {
-            var quantity = parseFloat(listItems_2[i].getAttribute('data-item-quantity'));
-            quantities.push(quantity);
+
+        var sold_name_json_1 = document.getElementById('sold_name_json_1');
+        var sold_names_tmp = sold_name_json_1.getElementsByTagName('li');
+        var sold_name_json_2 = document.getElementById('sold_name_json_2');
+        var sold_counts_tmp = sold_name_json_2.getElementsByTagName('li');
+        var sold = [];
+        for (var i = 0; i < sold_names_tmp.length; i++) {
+            var sold_name = sold_names_tmp[i].getAttribute('data-item-name');
+            var sold_count = sold_counts_tmp[i].getAttribute('data-item-count');
+            sold.push({name:sold_name, value:sold_count});
         }
 
         // 指定图表的配置项和数据
-        var option = {
-        title: {
-        text: 'Top 5 Carpet Items with Low Inventory'
-    },
-            grid: {
-                x: 80,
-                y: 60,
-                x2: 80,
-                y2: 60,
-                backgroundColor: 'rgba(0,0,0,0)',
-                borderWidth: 1,
-                borderColor: '#ccc'
-            },
-        tooltip: {},
-        xAxis: {
-        data: itemNames
-        
-    },
-        yAxis: {},
-        series: [
-    {
-        name: 'Quantity: ',
-        type: 'bar',
-        data: quantities
-    }
-        ]
+        option = {
+            title: {
+                text: 'Top 5 Carpets Items Sold',
 
-    };
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                x:'center',
+                y:'top',
+                padding: [50,0,0,0]
+
+            },
+            series: [
+                {
+                    name: 'Access From',
+                    type: 'pie',
+                    radius: '50%',
+                    data: sold,
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    },
+                    label:{            //饼图图形上的文本标签
+                        normal:{
+                            show:true,
+                            position:'outer', //标签的位置
+                            textStyle : {
+                                fontWeight : 400 ,
+                                fontSize : 16    //文字的字体大小
+                            },
+                            formatter:function (arg) {
+                                return arg.percent+'%'+'\n'+arg.data.name+': '+arg.data.value
+                            }
+
+
+                        }
+                    },
+                }
+            ]
+        };
 
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
@@ -200,47 +268,61 @@
         
         var myChart2 = echarts.init(document.getElementById('main2'));
          // 从 html tag 获取高库存数据
-        var highInventoryList_1 = document.getElementById('highInventoryList_1');
-        var listItems_1_high = highInventoryList_1.getElementsByTagName('li');
-        var itemNames_high = [];
-        for (var i = 0; i < listItems_1_high.length; i++) {
-            var itemName_high = listItems_1_high[i].getAttribute('data-item-name');
-            itemNames_high.push(itemName_high);
-        }
-        var highInventoryList_2 = document.getElementById('highInventoryList_2');
-        var listItems_2_high = highInventoryList_2.getElementsByTagName('li');
-        var quantities_high = [];
-        for (var i = 0; i < listItems_2_high.length; i++) {
-            var quantity_high = parseFloat(listItems_2_high[i].getAttribute('data-item-quantity'));
-            quantities_high.push(quantity_high);
+        var sold_cate_json_1 = document.getElementById('sold_cate_json_1');
+        var sold_cates_tmp = sold_cate_json_1.getElementsByTagName('li');
+        var sold_cate_json_2 = document.getElementById('sold_cate_json_2');
+        var sold_counts_tmp_cate = sold_cate_json_2.getElementsByTagName('li');
+        var sold_cates = [];
+        for (var i = 0; i < sold_cates_tmp.length; i++) {
+            var sold_cate = sold_cates_tmp[i].getAttribute('data-item-name');
+            var sold_c_cate = sold_counts_tmp_cate[i].getAttribute('data-item-count');
+            sold_cates.push({name:sold_cate, value: sold_c_cate});
         }
 
         // 指定图表的配置项和数据
-        var option2 = {
+        option2 = {
             title: {
-                text: 'Top 5 Carpet Items with High Inventory'
+                text: 'Top 5 Carpet Item Categories Sold',
+                left: 'center'
             },
-            grid: {
-                x: 80,
-                y: 60,
-                x2: 80,
-                y2: 60,
-                backgroundColor: 'rgba(255,255,0,0)',
-                borderWidth: 1,
-                borderColor: '#ccc'
+            tooltip: {
+                trigger: 'item'
             },
-            tooltip: {},
+            legend: {
+                x:'center',
+                y:'top',
+                padding: [50,0,0,0]
 
-            xAxis: {
-                data: itemNames_high
             },
-            yAxis: {},
             series: [
-            {
-                name: 'Quantity: ',
-                type: 'bar',
-                data: quantities_high
-            }
+                {
+                    name: 'Access From',
+                    type: 'pie',
+                    radius: '50%',
+                    data: sold_cates,
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    },
+                    label:{            //饼图图形上的文本标签
+                        normal:{
+                            show:true,
+                            position:'outer', //标签的位置
+                            textStyle : {
+                                fontWeight : 400 ,
+                                fontSize : 16    //文字的字体大小
+                            },
+                            formatter:function (arg) {
+                                return arg.percent+'%'+'\n'+arg.data.name+': '+arg.data.value
+                            }
+
+
+                        }
+                    },
+                }
             ]
         };
 
@@ -343,7 +425,7 @@
 
             },
             series: [
-                {   roseType: 'area',
+                {
                     name: 'Access From',
                     type: 'pie',
                     radius: '50%',
