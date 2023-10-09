@@ -62,10 +62,11 @@
 
 
     <h4 align="center">Choose Type</h4>
-    <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;"">
+    <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
     <div >
         <button type="button" onclick="window.location.href = '/salesDashboard'">Bar Charts</button>
     </div>
+
     <div style="margin-right:20px;"></div>
 
     <div >
@@ -73,6 +74,27 @@
     </div>
 
 </div>
+
+    <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
+        <div>
+            <h2>Top 5 Carpet Item Sold</h2>
+            <ul>
+                <% sold_name_json.forEach(function(item){%>
+                    <li>
+                        Carpet Name: <%= item.name %> - Sold: <%= item.count %> Pieces
+                    </li>
+                <% })%>
+            </ul>    </div>
+        <div style="margin-right:20px;"></div>
+        <div >
+            <h2>Top 5 Carpet Item Categories Sold</h2>
+            <ul>
+                <% for (const item of sold_cate_json) { %>
+                    <li>Category Name: <%= item.name %> - Sold: <%= item.count %> Pieces</li>
+                <% } %>
+            </ul>    </div>
+
+    </div>
 
 <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
     <div >
@@ -183,7 +205,7 @@
     <script type="text/javascript">
 
         // Plot 1
-        var myChart = echarts.init(document.getElementById('main1'));
+        var myChart = echarts.init(document.getElementById('main3'));
         // Get the Item Name and corresponding Inventory
         // Plot them in bar plots
         var lowInventoryList_1 = document.getElementById('lowInventoryList_1');
@@ -233,7 +255,7 @@
         myChart.setOption(option);
 
         // Plot 2
-        var myChart2 = echarts.init(document.getElementById('main2'));
+        var myChart2 = echarts.init(document.getElementById('main4'));
         var highInventoryList_1 = document.getElementById('highInventoryList_1');
         var listItems_1_high = highInventoryList_1.getElementsByTagName('li');
         var itemNames_high = [];
@@ -284,7 +306,7 @@
         // Get the Top 5 Sold Item Name and corresponding Count
         // Plot them in bar plots
 
-        var myChart3 = echarts.init(document.getElementById('main3'));
+        var myChart3 = echarts.init(document.getElementById('main2'));
 
         var sold_cate_json_1 = document.getElementById('sold_cate_json_1');
         var sold_cates_tmp = sold_cate_json_1.getElementsByTagName('li');
@@ -303,7 +325,7 @@
 
         var option3 = {
             title: {
-                text: 'Top 3 Sold Item Catgories'
+                text: 'Top 5 Carpet Item categories Sold'
             },
             tooltip: {},
             legend: {
@@ -328,7 +350,7 @@
         myChart3.setOption(option3);
         // Plot 4
 
-        var myChart4 = echarts.init(document.getElementById('main4'));
+        var myChart4 = echarts.init(document.getElementById('main1'));
 
         var sold_name_json_1 = document.getElementById('sold_name_json_1');
         var sold_names_tmp = sold_name_json_1.getElementsByTagName('li');
@@ -347,7 +369,7 @@
 
         var option4 = {
             title: {
-                text: 'Top 3 Sold Item Names'
+                text: 'Top 5 Carpets Items Sold'
             },
             tooltip: {},
             legend: {
