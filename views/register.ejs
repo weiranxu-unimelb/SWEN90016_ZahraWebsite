@@ -4,20 +4,94 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
+
+    <style type="text/css">
+        html,
+        body {
+            margin: 0;
+            font-family: "Arial","PingFang SC", "Microsoft Yahei", sans-serif;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url("login-background.jpg") fixed no-repeat;
+            background-size: cover;
+        }
+
+        .box {
+            width: 300px;
+            height: 450px;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            z-index: 100;
+            background-color: transparent;
+            border-radius: 18px;
+            overflow: hidden;
+            backdrop-filter: blur(40px);
+        }
+
+
+        .box input,
+        .box button{
+            margin: 3px 0;
+            height: 36px;
+            border: none;
+            background-color: rgb(255, 255, 255);
+            border-radius: 4px;
+            padding: 0 14px;
+            color: #070707;
+        }
+
+        .box button {
+            font-size:20px;
+        }
+
+        .box label{
+            font-width: bold;
+            font-size: 20px;
+            color: #030303;
+        }
+
+        .box p{
+            font-size: 20px;
+        }
+
+        .wel{
+            font-weight: bolder;
+            color: #070707;
+        }
+
+
+    </style>
+
+
 </head>
 <body>
-<h1>Register</h1>
-<form method="post" action="/register">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required><br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br>
-    <button type="submit">Register</button>
 
-    <div>
-        <label for="adminKey">Admin Register? Enter Admin Key</label>
-        <input type="text" id="adminKey" name="adminKey" placeholder="Optional admin key here">
-    </div>
-</form>
+<div class="container">
+    <form method="post" action="/register" class="box">
+        <h1 class="wel">Register</h1>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required><br>
+        <button type="submit">Register</button>
+
+        <div style="margin-top:20px;"></div>
+
+        <div>
+            <label for="adminKey">Admin Register? <br style="margin-top:40px;">Enter Admin Key</label>
+            <input type="text" id="adminKey" style="margin-top:20px;" name="adminKey" placeholder="Optional admin key here">
+        </div>
+    </form>
+</div>
+
 </body>
 </html>

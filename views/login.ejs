@@ -4,23 +4,109 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <style type="text/css">
+        html,
+        body {
+            margin: 0;
+            font-family: "Arial","PingFang SC", "Microsoft Yahei", sans-serif;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url("login-background.jpg") fixed no-repeat;
+            background-size: cover;
+            }
+
+        .box {
+            width: 300px;
+            height: 550px;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            z-index: 100;
+            background-color: transparent;
+            border-radius: 18px;
+            overflow: hidden;
+            backdrop-filter: blur(40px);
+            }
+
+
+        .box input,
+        .box button{
+             margin: 3px 0;
+             height: 36px;
+             border: none;
+             background-color: rgb(255, 255, 255);
+             border-radius: 4px;
+             padding: 0 14px;
+             color: #070707;
+            }
+
+        .box button {
+            font-size:20px;
+        }
+
+        .box label{
+            font-width: bold;
+            font-size: 20px;
+            color: #030303;
+        }
+
+        .box p{
+            font-size: 20px;
+        }
+
+        .wel{
+            font-weight: bolder;
+            color: #070707;
+        }
+
+
+    </style>
 </head>
 <body>
-<h1>Login Now</h1>
-<form method="post" action="/login">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required><br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br>
-    <button type="submit">Login</button>
 
-    <div>
-        <label for="adminKey">Admin Register? Enter Admin Key</label>
-        <input type="text" id="adminKey" name="adminKey" placeholder="Optional admin key here">
-    </div>
-</form>
+<div class="container">
 
-<!-- Add a link/button to navigate to the registration page -->
-<p>Don't have an account? <a href="/register">Register here</a></p>
+
+    <form method="post" action="/login" class="box">
+        <h2 class="wel">Welcome to <br>
+        Zahra’s Carpet Paradise</h2>
+        <h2>Login Now</h2>
+        <label for="username">Username</label>
+        <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Username"
+                required
+                />
+        <label for="password">Password</label>
+        <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="密码"
+                required
+                />
+
+        <div>
+            <label for="adminKey">Admin Register? <br>Enter Admin Key</label>
+            <input type="text" id="adminKey" name="adminKey" placeholder="Optional">
+        </div>
+        <button type="submit">Login</button>
+        <!-- Add a link/button to navigate to the registration page -->
+        <p>Don't have an account? <a href="/register"><br>Register here</a></p>
+        </form>
+
+
+</div>
+
 </body>
 </html>

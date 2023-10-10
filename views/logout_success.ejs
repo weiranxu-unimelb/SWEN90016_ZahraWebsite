@@ -2,13 +2,83 @@
 <html>
 <head>
     <title>Success</title>
+    <style type="text/css">
+        html,
+        body {
+            margin: 0;
+            font-family: "Arial","PingFang SC", "Microsoft Yahei", sans-serif;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url("login-background.jpg") fixed no-repeat;
+            background-size: cover;
+        }
+
+        .box {
+            width: 300px;
+            height:400px;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            z-index: 100;
+            background-color: transparent;
+            border-radius: 18px;
+            overflow: hidden;
+            backdrop-filter: blur(40px);
+        }
+
+
+        .box input,
+        .box button{
+            margin: 3px 0;
+            height: 36px;
+            border: none;
+            background-color: rgb(255, 255, 255);
+            border-radius: 4px;
+            padding: 0 14px;
+            color: #070707;
+        }
+
+        .box button {
+            font-size:20px;
+        }
+
+        .box label{
+            font-width: bold;
+            font-size: 20px;
+            color: #030303;
+        }
+
+        .box p{
+            font-size: 20px;
+        }
+
+        .wel{
+            font-weight: bolder;
+            color: #070707;
+        }
+
+
+    </style>
 </head>
 <body>
+
+<div class="container">
     <h2>Success</h2>
-    
     <p>Customer logged out successfully!</p>
     <!-- <button type="button" href="/">Back to Home</button> -->
     <button type="button" onclick="window.location.href = '/'">Back to Home</button>
+</div>
+
+    
+
     
     
 </body>
