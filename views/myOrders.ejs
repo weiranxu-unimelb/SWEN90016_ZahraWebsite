@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Assuming you have a styles.css for styling -->
+</head>
+<body>
+<h1>My Orders</h1>
+
+<!-- Display user info -->
+<h2>User Information:</h2>
+<p>User Name: <%= user ? user.username : 'No user available' %></p>
+<p>User Role: <%= user ? user.role : 'No user available' %></p>
+
+<!-- Display user's past orders -->
+<h2>Order History</h2>
+<% if(orders && orders.length > 0) { %>
+    <ul>
+        <% orders.forEach(order => { %>
+            <li>
+                <h3>Order Number: <%= order.orderNumber %></h3>
+                <p>Date: <%= order.purchaseOrderDate %></p>
+                <p>Total Cost: $<%= order.totalCost %></p>
+                <p>Status: <%= order.orderStatus %></p>
+                <p>Items:</p>
+                <ul>
+                    <% order.items.forEach(item => { %>
+                        <li>
+                            Name: <%= item.name %>, Quantity: <%= item.quantity %>, Price: $<%= item.price %>
+                        </li>
+                    <% }) %>
+                </ul>
+            </li>
+        <% }) %>
+    </ul>
+<% } else { %>
+    <p>You have no past orders.</p>
+<% } %>
+
+<br>
+<button type="button" onclick="window.location.href = '/'">Back to Home</button>
+<button type="button" onclick="window.location.href = '/checkout'">Go to Checkout</button>
+<button type="button" onclick="window.location.href = '/'">Log Out</button>
+</body>
+</html>

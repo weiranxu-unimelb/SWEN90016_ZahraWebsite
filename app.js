@@ -729,11 +729,43 @@ app.get('/myOrders', async (req, res) => {
 
         // 渲染myOrders视图并传递用户订单数据
         res.render('myOrders', {
+            user: user,
             orders: userOrders
         });
 
     } catch (error) {
         console.error('Failed to fetch user orders', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+app.post('/checkout', async (req, res) => {
+    try {
+        const user = req.session.user;
+
+        if (!user) {
+            res.status(401).send('Please login to checkout');
+            return;
+        }
+
+        // 获取checkout数据
+        const { customerId, description, amount } = req.body;
+
+        // 创建新的订单记录
+        const newOrder = new Order({
+            userId: user._id,   // 使用session中的user ID
+            customerId: customerId,
+            description: description,
+            amount: amount
+        });
+
+        // 保存订单到数据库
+        await newOrder.save();
+
+        // 响应用户
+        res.send('Checkout successful! Your order has been recorded.');
+
+    } catch (error) {
+        console.error('Failed to record order during checkout', error);
         res.status(500).send('Internal Server Error');
     }
 });
