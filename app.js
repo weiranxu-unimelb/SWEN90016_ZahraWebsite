@@ -699,5 +699,41 @@ function findTop5FrequentKitNames(combinedItemList) {
     const top5KitNames = kitNameCountsArray.slice(0, 5);
     return top5KitNames;
   }
-  
-  
+
+//MyOrder
+const orderSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    customerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Customer'
+    },
+    description: String,
+    amount: Number
+});
+
+const Order = mongoose.model('Order', orderSchema);
+app.get('/myOrders', async (req, res) => {
+    try {
+        const user = req.session.user;
+
+        if (!user) {
+            res.redirect('/login'); // 如果用户未登录，重定向到登录页面
+            return;
+        }
+
+        // 获取与当前用户关联的订单，并与Customer模型一起填充
+        const userOrders = await Order.find({ userId: user._id }).populate('customerId');
+
+        // 渲染myOrders视图并传递用户订单数据
+        res.render('myOrders', {
+            orders: userOrders
+        });
+
+    } catch (error) {
+        console.error('Failed to fetch user orders', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
