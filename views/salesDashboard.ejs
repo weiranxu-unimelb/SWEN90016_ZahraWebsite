@@ -8,7 +8,38 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style type="text/css">
+        body {
+            background: url("dashborad.jpg") fixed no-repeat;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
 
+        .ylxq {
+
+            margin:0 auto;
+            width:1200px;
+            height:1600px;
+            position: center;
+            background-color: transparent;
+            border-radius: 18px;
+            overflow: hidden;
+            backdrop-filter: blur(40px);
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #a2af4c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            font-size: 20px;
+        }
     </style>
     <!-- Disable the display of data list -->
     <style>
@@ -42,81 +73,83 @@
 
 </head>
 <body>
-<div id="reminder" style="display:none;">
-    <p>Only Administrators are authorized for this page!</p>
-</div>
-<h1 align="center">Sales Dashboard</h1>
-<div id="content" style="margin-top:20px;">
+<div class="ylxq">
+    <div id="reminder" style="display:none;">
+        <p>Only Administrators are authorized for this page!</p>
+    </div>
+    <h1 align="center">Sales Dashboard</h1>
+    <div id="content" style="margin-top:20px;">
 
-    <div style="display:flex;justify-content:center;align-items:center;margin-top:20px;">
-        <div >
-            <button type="button" onclick="window.location.href = '/index'">Back to Home</button>
+        <div style="display:flex;justify-content:center;align-items:center;margin-top:20px;">
+            <div >
+                <button type="button" onclick="window.location.href = '/index'">Back to Home</button>
+            </div>
+            <div style="margin-right:20px;"></div>
+
+            <div >
+                <button type="button" onclick="window.location.href = '/'">Log Out</button>
+            </div>
+
         </div>
-        <div style="margin-right:20px;"></div>
 
-        <div >
-            <button type="button" onclick="window.location.href = '/'">Log Out</button>
+
+        <h3 align="center" >Choose Type</h4>
+        <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
+            <div >
+                <button type="button" onclick="window.location.href = '/salesDashboard'">Bar Charts</button>
+            </div>
+
+            <div style="margin-right:20px;"></div>
+
+            <div >
+                <button type="button" onclick="window.location.href = '/salesDashboard_pie'">Pie Charts</button>
+            </div>
+
         </div>
 
-    </div>
+        <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
+            <div>
+                <h2>Top 5 Carpet Item Sold</h2>
+                <ul>
+                    <% sold_name_json.forEach(function(item){%>
+                        <li>
+                            Carpet Name: <%= item.name %> - Sold: <%= item.count %> Pieces
+                        </li>
+                    <% })%>
+                </ul>    </div>
+            <div style="margin-right:20px;"></div>
+            <div >
+                <h2>Top 5 Carpet Item Categories Sold</h2>
+                <ul>
+                    <% for (const item of sold_cate_json) { %>
+                        <li>Category Name: <%= item.name %> - Sold: <%= item.count %> Pieces</li>
+                    <% } %>
+                </ul>    </div>
 
+        </div>
 
-    <h4 align="center">Choose Type</h4>
-    <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
-    <div >
-        <button type="button" onclick="window.location.href = '/salesDashboard'">Bar Charts</button>
-    </div>
+        <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
+            <div >
 
-    <div style="margin-right:20px;"></div>
+                <h2>Top 5 Carpet Items with Low Inventory</h2>
+                <ul>
+                    <% lowInventoryItems.forEach(function(item){%>
+                        <li>
+                            Carpet Name: <%= item.name %> - Quantity: <%= item.quantity %> in stock
+                        </li>
+                    <% })%>
+                </ul>
+            </div>
+            <div style="margin-right:20px;"></div>
+            <div >
+                <h2>Top 5 Carpet Items with High Inventory</h2>
+                <ul>
+                    <% for (const item of highInventoryItems) { %>
+                        <li>Carpet Name: <%= item.name %> - Quantity: <%= item.quantity %> in stock</li>
+                    <% } %>
+                </ul>    </div>
 
-    <div >
-        <button type="button" onclick="window.location.href = '/salesDashboard_pie'">Pie Charts</button>
-    </div>
-
-</div>
-
-    <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
-        <div>
-            <h2>Top 5 Carpet Item Sold</h2>
-            <ul>
-                <% sold_name_json.forEach(function(item){%>
-                    <li>
-                        Carpet Name: <%= item.name %> - Sold: <%= item.count %> Pieces
-                    </li>
-                <% })%>
-            </ul>    </div>
-        <div style="margin-right:20px;"></div>
-        <div >
-            <h2>Top 5 Carpet Item Categories Sold</h2>
-            <ul>
-                <% for (const item of sold_cate_json) { %>
-                    <li>Category Name: <%= item.name %> - Sold: <%= item.count %> Pieces</li>
-                <% } %>
-            </ul>    </div>
-
-    </div>
-
-<div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
-    <div >
-
-        <h2>Top 5 Carpet Items with Low Inventory</h2>
-        <ul>
-            <% lowInventoryItems.forEach(function(item){%>
-                <li>
-                    Carpet Name: <%= item.name %> - Quantity: <%= item.quantity %> in stock
-                </li>
-            <% })%>
-        </ul>    
-    </div>
-    <div style="margin-right:20px;"></div>
-    <div >
-        <h2>Top 5 Carpet Items with High Inventory</h2>
-        <ul>
-            <% for (const item of highInventoryItems) { %>
-                <li>Carpet Name: <%= item.name %> - Quantity: <%= item.quantity %> in stock</li>
-            <% } %>
-        </ul>    </div>
-
+        </div>
 </div>
 
 
@@ -225,7 +258,10 @@
 
         var option = {
         title: {
-        text: 'Top 5 Carpet Items with Low Inventory'
+        text: 'Top 5 Carpet Items with Low Inventory',
+            textStyle: {
+                color: "#070707",
+            }
     },
             grid: {
                 x: 80,
@@ -238,10 +274,22 @@
             },
         tooltip: {},
         xAxis: {
-        data: itemNames
-        
+        data: itemNames,
+            axisLabel: {
+                show: true,
+                textStyle: {
+                    color: '#070707'  //更改坐标轴文字颜色
+
+                }
+            },
     },
-        yAxis: {},
+        yAxis: {
+            axisLabel: {
+                textStyle: {
+                    color: '#070707'
+                },
+            }
+        },
         series: [
     {
         name: 'Quantity: ',
@@ -274,7 +322,10 @@
         // 指定图表的配置项和数据
         var option2 = {
             title: {
-                text: 'Top 5 Carpet Items with High Inventory'
+                text: 'Top 5 Carpet Items with High Inventory',
+                textStyle: {
+                    color: "#070707",
+                }
             },
             grid: {
                 x: 80,
@@ -288,9 +339,22 @@
             tooltip: {},
 
             xAxis: {
-                data: itemNames_high
+                data: itemNames_high,
+                axisLabel: {
+                    show: true,
+                    textStyle: {
+                        color: '#070707'  //更改坐标轴文字颜色
+
+                    }
+                },
             },
-            yAxis: {},
+            yAxis: {
+                axisLabel: {
+                    textStyle: {
+                        color: '#070707'
+                    },
+                }
+            },
             series: [
             {
                 name: 'Quantity: ',
@@ -325,7 +389,10 @@
 
         var option3 = {
             title: {
-                text: 'Top 5 Carpet Item categories Sold'
+                text: 'Top 5 Carpet Item categories Sold',
+                textStyle: {
+                    color: "#070707",
+                }
             },
             tooltip: {},
             legend: {
@@ -335,9 +402,22 @@
                 data: ['Sold Item']
             },
             xAxis: {
-                data: sold_cates
+                data: sold_cates,
+                axisLabel: {
+                    show: true,
+                    textStyle: {
+                        color: '#070707'  //更改坐标轴文字颜色
+
+                    }
+                },
             },
-            yAxis: {},
+            yAxis: {
+                axisLabel: {
+                    textStyle: {
+                        color: '#070707'
+                    },
+                }
+            },
             series: [
                 {
                     name: 'Sold Category',
@@ -369,7 +449,10 @@
 
         var option4 = {
             title: {
-                text: 'Top 5 Carpets Items Sold'
+                text: 'Top 5 Carpets Items Sold',
+                textStyle: {
+                    color: "#070707",
+                }
             },
             tooltip: {},
             legend: {
@@ -379,9 +462,22 @@
                 data: ['Sold Item']
             },
             xAxis: {
-                data: sold_names
+                data: sold_names,
+                axisLabel: {
+                    show: true,
+                    textStyle: {
+                        color: '#070707'  //更改坐标轴文字颜色
+
+                    }
+                },
             },
-            yAxis: {},
+            yAxis: {
+                axisLabel: {
+                    textStyle: {
+                        color: '#070707'
+                    },
+                }
+            },
             series: [
                 {
                     name: 'Sold Counts',

@@ -5,7 +5,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+            background: url("login-background.jpg") fixed no-repeat;
+            background-size: cover;
             text-align: center;
             padding: 20px;
         }
@@ -13,6 +14,18 @@
         h2 {
             color: #333;
             text-align: center;
+        }
+
+        .ylxq {
+
+            margin:0 auto;
+            width:500px;
+            height:2000px;
+            position: center;
+            background-color: transparent;
+            border-radius: 18px;
+            overflow: hidden;
+            backdrop-filter: blur(50px);
         }
 
         form {
@@ -29,6 +42,7 @@
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
+            font-size: 20px;
         }
 
         input[type="text"],
@@ -58,13 +72,14 @@
         input[type="submit"],
         button {
             padding: 10px 20px;
-            background-color: #4CAF50;
+            background-color: #a8af4c;
             color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             display: block;
             margin: 0 auto;
+            font-size: 22px;
         }
 
         input[type="submit"]:hover,
@@ -78,79 +93,81 @@
     </style>
 </head>
 <body>
-    <h1>Create Carpet Item</h1>
-    <form action="/carpet-item" method="POST" enctype="multipart/form-data">
-        <label for="name">Item Name:</label><br>
-        <input type="text" id="name" name="name" required>
-        <br><br>
+    <div class="ylxq">
+        <h1>Create Carpet Item</h1>
+        <form action="/carpet-item" method="POST" enctype="multipart/form-data">
+            <label for="name">Item Name:</label><br>
+            <input type="text" id="name" name="name" required>
+            <br><br>
 
-        <label for="category">Category:</label><br>
-        <select id="category" name="category" required>
-            <% carpetCategories.forEach(category => { %>
-                <option value="<%= category._id %>"><%= category.name %></option>
-            <% }) %>
-        </select>
-        <br><br>
-        <label for="length">Length:</label><br>
-        <input type="number" id="length" name="length" required>
-        <br><br>
-        <label for="breadth">Breadth:</label><br>
-        <input type="number" id="breadth" name="breadth" required>
-        <br><br>
-        <label for="weight">Weight:</label><br>
-        <input type="number" id="weight" name="weight" required>
-        <br><br>
-        <label for="dimensions">Dimensions:</label><br>
-        <input type="text" id="dimensions" name="dimensions" required>
-        <br><br>
-        <label for="colour">Colour:</label><br>
-        <input type="text" id="colour" name="colour" required>
-        <br><br>
-        <label for="pattern">Pattern:</label><br>
-        <input type="text" id="pattern" name="pattern" required>
-        <br><br>
-        <label for="dominantColour1">Dominant Colour 1:</label><br>
-        <input type="text" id="dominantColour1" name="dominantColour1" required>
-        <br><br>
-        <label for="dominantColour2">Dominant Colour 2:</label><br>
-        <input type="text" id="dominantColour2" name="dominantColour2" required>
-        <br><br>
-        <label for="images">Images:</label><br>
-        <input type="file" id="images" name="images" multiple required>
-        <br><br>
-        <label for="size">Size:</label><br>
-        <select id="size" name="size" required>
-            <option value="XS">XS</option>
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-        </select>   
-        <br><br>
-        <label for="numericSize">Numeric Size:</label><br>
-        <input type="number" id="numericSize" name="numericSize" required>      
-        <br><br>
-        <label for="quantity">Quantity:</label><br>
-        <input type="number" id="quantity" name="quantity" required>
-        <br><br>
-        <label for="price">Price:</label><br>
-        <input type="number" id="price" name="price" required>
-        <br><br>
-        <label for="countryOfOrigin">Country of Origin:</label><br>
-        <select id="countryOfOrigin" name="countryOfOrigin" required>
-            <option value="Australia">Australia</option>
-            <option value="China">China</option>
-            <option value="Japan">Japan</option>
-            <option value="Iran">Iran</option>
-            <option value="India">India</option>
-        </select>   
-        <br><br>
-        <div id="error-message" class="error-message"></div>
-        <br><br>
-        <button type="submit">Create</button>
-        <br><br>
-        <button type="button" onclick="window.location.href = '/'">Log Out</button>
-    </form>
+            <label for="category">Category:</label><br>
+            <select id="category" name="category" required>
+                <% carpetCategories.forEach(category => { %>
+                    <option value="<%= category._id %>"><%= category.name %></option>
+                <% }) %>
+            </select>
+            <br><br>
+            <label for="length">Length:</label><br>
+            <input type="number" id="length" name="length" required>
+            <br><br>
+            <label for="breadth">Breadth:</label><br>
+            <input type="number" id="breadth" name="breadth" required>
+            <br><br>
+            <label for="weight">Weight:</label><br>
+            <input type="number" id="weight" name="weight" required>
+            <br><br>
+            <label for="dimensions">Dimensions:</label><br>
+            <input type="text" id="dimensions" name="dimensions" required>
+            <br><br>
+            <label for="colour">Colour:</label><br>
+            <input type="text" id="colour" name="colour" required>
+            <br><br>
+            <label for="pattern">Pattern:</label><br>
+            <input type="text" id="pattern" name="pattern" required>
+            <br><br>
+            <label for="dominantColour1">Dominant Colour 1:</label><br>
+            <input type="text" id="dominantColour1" name="dominantColour1" required>
+            <br><br>
+            <label for="dominantColour2">Dominant Colour 2:</label><br>
+            <input type="text" id="dominantColour2" name="dominantColour2" required>
+            <br><br>
+            <label for="images">Images:</label><br>
+            <input type="file" id="images" name="images" multiple required>
+            <br><br>
+            <label for="size">Size:</label><br>
+            <select id="size" name="size" required>
+                <option value="XS">XS</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+            </select>
+            <br><br>
+            <label for="numericSize">Numeric Size:</label><br>
+            <input type="number" id="numericSize" name="numericSize" required>
+            <br><br>
+            <label for="quantity">Quantity:</label><br>
+            <input type="number" id="quantity" name="quantity" required>
+            <br><br>
+            <label for="price">Price:</label><br>
+            <input type="number" id="price" name="price" required>
+            <br><br>
+            <label for="countryOfOrigin">Country of Origin:</label><br>
+            <select id="countryOfOrigin" name="countryOfOrigin" required>
+                <option value="Australia">Australia</option>
+                <option value="China">China</option>
+                <option value="Japan">Japan</option>
+                <option value="Iran">Iran</option>
+                <option value="India">India</option>
+            </select>
+            <br><br>
+            <div id="error-message" class="error-message"></div>
+            <br><br>
+            <button type="submit">Create</button>
+            <br><br>
+            <button type="button" onclick="window.location.href = '/'">Log Out</button>
+        </form>
+    </div>
 
 </body>
 </html>

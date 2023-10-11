@@ -7,7 +7,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+            background: url("login-background.jpg") fixed no-repeat;
+            background-size: cover;
             text-align: center;
             padding: 20px;
         }
@@ -22,6 +23,18 @@
             text-align: center;
         }
 
+        .ylxq {
+
+            margin:0 auto;
+            width:600px;
+            height:1800px;
+            position: center;
+            background-color: transparent;
+            border-radius: 18px;
+            overflow: hidden;
+            backdrop-filter: blur(50px);
+        }
+
         form {
             max-width: 500px;
             margin: 0 auto;
@@ -30,8 +43,9 @@
 
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
             font-weight: bold;
+            font-size: 20px;
         }
 
         input[type="text"],
@@ -40,10 +54,10 @@
         input[type="tel"],
         textarea {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         select {
@@ -57,13 +71,14 @@
         input[type="submit"],
         button {
             padding: 10px 20px;
-            background-color: #4CAF50;
+            background-color: #96af4c;
             color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             display: block;
             margin: 0 auto;
+            font-size: 20px;
         }
 
         input[type="submit"]:hover,
@@ -72,7 +87,7 @@
         }
 
         br {
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         ul {
@@ -80,118 +95,123 @@
             list-style-type: none;
             padding-left: 0;
         }
+
+        p{
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
-    <h1>Checkout</h1>
+    <div class="ylxq"><h1>Checkout</h1>
 
-    <!-- Customer Information -->
-    <h2>Customer Information</h2>
+        <!-- Customer Information -->
+        <h2>Customer Information</h2>
 
-    <!-- <label for="customerName">Customer Name:</label>
-    <input type="text" id="customerName" readonly> 
+        <!-- <label for="customerName">Customer Name:</label>
+        <input type="text" id="customerName" readonly>
 
-    <label for="billingAddress">Billing Address:</label>
-    <input type="text" id="billingAddress" readonly>-->
+        <label for="billingAddress">Billing Address:</label>
+        <input type="text" id="billingAddress" readonly>-->
 
-    <p>User Name:</p>
-    <p><%= user ? user.username : 'No logged in customer available' %></p>
+        <p>User Name:</p>
+        <p><%= user ? user.username : 'No logged in customer available' %></p>
 
-    <p>User Role:</p>
-    <p><%= user ? user.role : 'No logged in customer available' %></p>
+        <p>User Role:</p>
+        <p><%= user ? user.role : 'No logged in customer available' %></p>
 
-    <!-- TODO:  // Check if quantity exceeds -->
+        <!-- TODO:  // Check if quantity exceeds -->
 
-    <!-- Order Details -->
-    
-    <h2>Order Details</h2>
-    <form action="/checkout" method="POST">
-    <!-- <form id="addItemForm"> -->
-        <label for="carpetItem1">Choose Kit Item(s):</label><br>
-        <select id="item1" name="carpetkititem1" required>
-            <% combinedItems.forEach(item => { %>
-                    <option value="<%= item._id %>" data-name="<%= item.name %>" 
-                        data-price="<%= item.price %>" data-category = "<%= item.category %>" >
+        <!-- Order Details -->
+
+        <h2>Order Details</h2>
+        <form action="/checkout" method="POST">
+            <!-- <form id="addItemForm"> -->
+            <label for="carpetItem1">Choose Kit Item(s):</label><br>
+            <select id="item1" name="carpetkititem1" required>
+                <% combinedItems.forEach(item => { %>
+                    <option value="<%= item._id %>" data-name="<%= item.name %>"
+                            data-price="<%= item.price %>" data-category = "<%= item.category %>" >
                         Carpet/Kit Name: <%= item.name %> <br> (Quantity: <%= item.quantity %> || Price: <%= item.price %>)</option>
-            <% }) %>
-        </select>
+                <% }) %>
+            </select>
 
 
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" min="1" required>
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" min="1" required>
 
-        <button type="button" id="addItemButton">Add Item</button>
-    <!-- </form> -->
-
-    
-
-    <!-- Display user-selected items and total cost -->
-    <h2>Your Selection:</h2>
-    <ul id="itemList" name="itemList"></ul>
-    <h2>Total Cost:</h2>
-    <input type="hidden" id="totalCost" name="totalCost" value="0.00">
-    <p id="totalCostDisplay">0.00</p>
-    <!-- <label for="totalCost"  id="totalCost" name="totalCost">
-    <p>0.00</p> -->
-    </label>
-    <!-- Use Hidden tag for storing the sold name/category arrays, to be used in backend (req.body.itemList_name)-->
-    <input type="hidden" id="itemList_name" name="itemList_name" value="">
-    <input type="hidden" id="itemList_category" name="itemList_category" value="">
-
-
-    <br><br>
-    <label for="preferredPaymentMethod">Preferred Payment Method:</label><br>
-    <input type="text" id="preferredPaymentMethod" name="preferredPaymentMethod" placeholder="MasterCard">
-
-    <br><br>
-    <label for="deliveryInstructions">Delivery Instructions:</label><br>
-    <!-- Use name = ... tag , to be used in backend (req.body....)-->
-    <textarea id="deliveryInstructions" placeholder="From Iran to Melbourne" name = "deliveryInstructions"></textarea>
-
-    <br><br>
-    <label for="purchaseOrderDate">Purchase Order Date:</label><br>
-    <p  name = "purchaseOrderDate"><%= currentDate %></p>
-
-    <br>
-    <label for="orderNumber">Order Number:</label><br>
-    <input type="text" id="orderNumber" name = "orderNumber" readonly>
-
-    <!-- <br><br>
-    <label for="orderTotal">Order Total:</label><br>
-    <input type="text" id="orderTotal" readonly> -->
-
-    <br><br>
-    <label for="discounts">Discounts or Code:</label><br>
-    <input type="text" id="discounts" name = "discounts">
-
-    <br><br>
-    <label for="salesRepresentative">Sales Representative:</label><br>
-    <input type="text" id="salesRepresentative" name="salesRepresentative">
-
-    <br><br>
-    <label for="orderStatus">Order Status:</label><br>
-    <select id="orderStatus" name = "orderStatus">
-        <option value="pending">Pending</option>
-        <option value="confirmed">Confirmed</option>
-        <option value="shipped">Shipped</option>
-        <option value="delivered">Delivered</option>
-    </select><br>
-
-    <br><br>
-    <label for="customerNotes">Customer Notes:</label><br>
-    <textarea id="customerNotes" name = "customerNotes"></textarea>
-
-    <br><br>
-    
+            <button type="button" id="addItemButton">Add Item</button>
+            <!-- </form> -->
 
 
 
+            <!-- Display user-selected items and total cost -->
+            <h2>Your Selection:</h2>
+            <ul id="itemList" name="itemList" style="font-size: 20px"></ul>
+            <h2>Total Cost:</h2>
+            <input type="hidden" id="totalCost" name="totalCost" value="0.00">
+            <p id="totalCostDisplay" style="font-size: 25px;">0.00</p>
+            <!-- <label for="totalCost"  id="totalCost" name="totalCost">
+            <p>0.00</p> -->
+            </label>
+            <!-- Use Hidden tag for storing the sold name/category arrays, to be used in backend (req.body.itemList_name)-->
+            <input type="hidden" id="itemList_name" name="itemList_name" value="">
+            <input type="hidden" id="itemList_category" name="itemList_category" value="">
 
-    <!-- Submit Button -->
-    <button id="submitOrder" type="submit">Submit Order</button>
-    <br><br>
-        <button type="button" onclick="window.location.href = '/'">Log Out</button>
-</form>
+
+            <br><br>
+            <label for="preferredPaymentMethod">Preferred Payment Method:</label><br>
+            <input type="text" id="preferredPaymentMethod" name="preferredPaymentMethod" placeholder="MasterCard">
+
+            <br><br>
+            <label for="deliveryInstructions">Delivery Instructions:</label><br>
+            <!-- Use name = ... tag , to be used in backend (req.body....)-->
+            <textarea id="deliveryInstructions" placeholder="From Iran to Melbourne" name = "deliveryInstructions"></textarea>
+
+            <br><br>
+            <label for="purchaseOrderDate">Purchase Order Date:</label><br>
+            <p  name = "purchaseOrderDate"><%= currentDate %></p>
+
+            <br>
+            <label for="orderNumber">Order Number:</label><br>
+            <input type="text" id="orderNumber" name = "orderNumber" readonly>
+
+            <!-- <br><br>
+            <label for="orderTotal">Order Total:</label><br>
+            <input type="text" id="orderTotal" readonly> -->
+
+            <br><br>
+            <label for="discounts">Discounts or Code:</label><br>
+            <input type="text" id="discounts" name = "discounts">
+
+            <br><br>
+            <label for="salesRepresentative">Sales Representative:</label><br>
+            <input type="text" id="salesRepresentative" name="salesRepresentative">
+
+            <br><br>
+            <label for="orderStatus">Order Status:</label><br>
+            <select id="orderStatus" name = "orderStatus">
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+            </select><br>
+
+            <br><br>
+            <label for="customerNotes">Customer Notes:</label><br>
+            <textarea id="customerNotes" name = "customerNotes"></textarea>
+
+            <br><br>
+
+
+
+
+
+            <!-- Submit Button -->
+            <button id="submitOrder" type="submit">Submit Order</button>
+            <br><br>
+            <button type="button" onclick="window.location.href = '/'">Log Out</button>
+        </form>
+    </div>
 
 </body>
 </html>

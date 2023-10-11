@@ -4,16 +4,29 @@
     <title>Zahra's Paradise</title>
     <style>
         body {
-            background-color: #f1f1f1;
+            background: url("login-background.jpg") fixed no-repeat;
+            background-size: cover;
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
             text-align: center;
         }
+
+        .ylxq {
+
+            margin:0 auto;
+            width:300px;
+            height:600px;
+            position: center;
+            background-color: transparent;
+            border-radius: 18px;
+            overflow: hidden;
+            backdrop-filter: blur(40px);
+        }
         
         h2 {
             color: #333;
-            font-size: 24px;
+            font-size: 28px;
         }
         
         form {
@@ -21,7 +34,7 @@
         }
         
         input[type="submit"] {
-            background-color: #4caf50;
+            background-color: #a2af4c;
             border: none;
             color: white;
             cursor: pointer;
@@ -39,36 +52,37 @@
     </style>
 </head>
 <body>
-    <h2>Zahra's Paradise</h2>
-    <br>
-    <form method="GET" action="/customer">
-        <input type="submit" value="Enter Customer Details">
-    </form>
-    <br>
-    <form method="GET" action="/carpetCategories">
-        <input type="submit" value="Enter Carpet Category Details">
-    </form>
-    <br>
-    <form method="GET" action="/carpetItems">
-        <input type="submit" value="Enter Carpet Item Details">
-    </form>
-    <br>
-    <form method="GET" action="/carpetKitItems">
-        <input type="submit" value="Enter Carpet Kit Details">
-    </form>
-    <br>
-    <form method="GET" action="/checkout">
-        <input type="submit" value="Checkout Page">
-    </form>
-    <br>
-    <form method="GET" action="/salesDashboard">
-        <input type="submit" value="Sales Dashboard">
-    </form>
+    <div class="ylxq">
+        <h2>Zahra's Paradise</h2>
+        <br>
+        <form method="GET" action="/customer">
+            <input type="submit" value="Enter Customer Details">
+        </form>
+        <br>
+        <form method="GET" action="/carpetCategories">
+            <input type="submit" value="Enter Carpet Category Details">
+        </form>
+        <br>
+        <form method="GET" action="/carpetItems">
+            <input type="submit" value="Enter Carpet Item Details">
+        </form>
+        <br>
+        <form method="GET" action="/carpetKitItems">
+            <input type="submit" value="Enter Carpet Kit Details">
+        </form>
+        <br>
+        <form method="GET" action="/checkout">
+            <input type="submit" value="Checkout Page">
+        </form>
+        <br>
+        <form method="GET" action="/salesDashboard">
+            <input type="submit" value="Sales Dashboard">
+        </form>
 
-    <br>
-    <br>
-    <form method="GET" action="/logout">
-        <input type="submit" value="Log Out">
-    </form>
+        <br>
+        <br>
+        <form method="GET" action="/logout">
+            <input type="submit" value="Log Out">
+        </form></div>
 </body>
 </html>
