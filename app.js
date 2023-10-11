@@ -724,14 +724,14 @@ function findTop5FrequentKitNames(combinedItemList) {
 const orderSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
     },
     customerId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Customer'
+        ref: 'Customer',
     },
     description: String,
-    amount: Number
+    amount: Number,
 });
 
 const Order = mongoose.model('Order', orderSchema);
@@ -744,22 +744,32 @@ app.get('/myOrders', async (req, res) => {
             return;
         }
 
-        // 获取与当前用户关联的订单，并与Customer模型一起填充
         const userOrders = await Order.find({ userId: user._id }).populate('customerId');
 
         if (userOrders.length === 0) {
-            // 如果用户没有订单，可以渲染一个特定的页面，提示用户没有订单
             res.render('noOrders', { user: user });
         } else {
-            // 渲染myOrders视图并传递用户订单数据
             res.render('myOrders', {
                 user: user,
-                orders: userOrders
+                orders: userOrders,
             });
         }
     } catch (error) {
         console.error('Failed to fetch user orders', error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).render('myOrders_error');
     }
+});
+
+// Render the 'No Orders' page
+app.get('/noOrders', (req, res) => {
+    // Check if a user is logged in
+    if (!req.session.user) {
+        return res.status(401).render('login'); // Redirect to the login page if not logged in
+    }
+
+    const user = req.session.user;
+
+    // Render the 'noOrders' page with the user's information
+    res.render('noOrders', { user });
 });
 
