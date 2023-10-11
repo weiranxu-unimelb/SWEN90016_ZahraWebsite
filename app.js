@@ -336,7 +336,7 @@ app.get('/checkout', async (req, res) => {
       if (!req.session.user) {
         return res.status(401).render('login'); // Redirect to the login page if not logged in
       }
-  
+        console.log('Session user during GET /checkout:', req.session.user);
       // Access user information from the session
         const user = req.session.user;
         const currentDate = new Date().toLocaleDateString();
@@ -365,13 +365,6 @@ app.get('/checkout', async (req, res) => {
 app.post('/checkout', async (req, res) => {
     try {
         const user = req.session.user;
-
-        if (!user) {
-            res.status(401).send('Please login to checkout');
-            return;
-        }
-
-        // 1. 创建一个新的 Checkout 文档
         const newCheckout = new Checkout({
             itemList: req.body.itemList,
             itemList_name: req.body.itemList_name,
@@ -379,33 +372,55 @@ app.post('/checkout', async (req, res) => {
             totalCost: req.body.totalCost,
             preferredPaymentMethod: req.body.preferredPaymentMethod,
             deliveryInstructions: req.body.deliveryInstructions,
-            purchaseOrderDate: req.body.purchaseOrderDate,
-            orderNumber: req.body.orderNumber,
+            purchaseOrderDate: req.body.purchaseOrderDate || new Date(),
+            orderNumber: req.body.orderNumber || generateOrderNumber(),
             discounts: req.body.discounts,
             salesRepresentativeName: req.body.salesRepresentative,
             orderStatus: req.body.orderStatus,
             additionalNotes: req.body.customerNotes
         });
+        const savedCheckout = await newCheckout.save();
+        const { customerId, description, amount } = req.body;
+
+        const generatedOrderNumber = req.body.orderNumber || generateOrderNumber();
+        console.log('Received itemList:', req.body.itemList);
+        console.log('Session user during POST /checkout:', req.session.user);
+        if (!user) {
+            res.status(401).send('Please login to checkout');
+            return;
+        }
+        console.log('Request body:', req.body);
+        // 1. 创建一个新的 Checkout 文档
+
 
         // 2. 保存 Checkout 文档
-        const savedCheckout = await newCheckout.save();
 
         console.log('Successfully saved checkout details');
 
         // 3. 获取 checkout 数据，创建新的订单记录
-        const { customerId, description, amount } = req.body;
 
+
+        //const generatedOrderNumber = newOrder.orderNumber || generateOrderNumber();
         const newOrder = new Order({
             userId: user._id,   // 使用 session 中的 user ID
             checkoutId: savedCheckout._id, // 关联订单和 Checkout
             customerId: customerId,
             description: description,
-            amount: amount
+            amount: amount,
+            itemList: savedCheckout.itemList,
+            totalCost: savedCheckout.totalCost,
+            orderNumber: generatedOrderNumber,
+            purchaseOrderDate: savedCheckout.purchaseOrderDate,
+            orderStatus: savedCheckout.orderStatus
         });
 
-        // 4. 保存订单到数据库
-        const savedOrder = await newOrder.save();
 
+
+        // 4. 保存订单到数据库
+
+        const savedOrder = await newOrder.save();
+        console.log('Fetched orders:', newOrder);
+        console.log('Saved order:', savedOrder);
         console.log('Order saved successfully');
         res.render('checkout_success');
     } catch (error) {
@@ -414,7 +429,9 @@ app.post('/checkout', async (req, res) => {
     }
 });
 
-
+function generateOrderNumber() {
+    return 'ORD' + Date.now();
+}
 
 
 const userSchema = mongoose.Schema({
@@ -738,6 +755,28 @@ const orderSchema = new mongoose.Schema({
     },
     description: String,
     amount: Number,
+    itemList: [{
+        name: String,
+        quantity: Number,
+        price: Number
+    }],
+    totalCost: {
+        type: Number,
+        required: true
+    },
+    orderNumber: {
+        type: String,
+        required: true
+    },
+    purchaseOrderDate: {
+        type: Date,
+        required: true
+    },
+    orderStatus: {
+        type: String,
+        enum: ['pending', 'confirmed', 'shipped', 'delivered'],
+        default: 'pending'
+    }
 });
 module.exports = mongoose.model('Order', orderSchema);
 
@@ -745,13 +784,15 @@ const Order = mongoose.model('Order', orderSchema);
 app.get('/myOrders', async (req, res) => {
     try {
         const user = req.session.user;
-
+        console.log('Session user during GET /myOrders:', req.session.user);
         if (!user) {
             res.redirect('/login'); // 如果用户未登录，重定向到登录页面
             return;
         }
 
-        const userOrders = await Order.find({ userId: user._id }).populate('customerId');
+        //const userOrders = await Order.find({ userId: user._id }).populate('customerId');
+        const userOrders = await Order.find({ userId: user._id }).populate('checkoutId').populate('customerId').populate('userId');
+        //const userOrders = await Order.find({ userId: user._id });
 
         if (userOrders.length === 0) {
             res.render('noOrders', { user: user });

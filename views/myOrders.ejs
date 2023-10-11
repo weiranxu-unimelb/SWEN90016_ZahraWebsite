@@ -14,36 +14,46 @@
 <p>User Name: <%= user ? user.username : 'No user available' %></p>
 <p>User Role: <%= user ? user.role : 'No user available' %></p>
 
-<!-- Display user's past orders -->
 <h2>Order History</h2>
 <% if(orders && orders.length > 0) { %>
     <ul>
         <% orders.forEach(order => { %>
             <li>
-                <h3>Order Number: <%= order.orderNumber %></h3>
-                <p>Date: <%= order.purchaseOrderDate %></p>
-                <p>Total Cost: $<%= order.totalCost %></p>
-                <p>Status: <%= order.orderStatus %></p>
-                <p>Items:</p>
-                <ul>
-                    <% if (order.items && order.items.length > 0) { %>
-                        <% order.items.forEach(item => { %>
-                            <li>
-                                Name: <%= item.name %>, Quantity: <%= item.quantity %>, Price: $<%= item.price %>
-                            </li>
-                        <% }) %>
-                    <% } else { %>
-                        <li>No items in this order.</li>
-                    <% } %>
-                </ul>
+                <h3>username: <%= order.userId ? order.userId.username : 'Unknown' %></h3>
+
+                <p>customerId: <%= order.customerId || 'Unknown' %></p>
+
+
+                <!-- Checking order and order status -->
+                <% if (order && order.orderStatus) { %>
+                    <p>Status: <%= order.orderStatus %></p>
+                <% } else { %>
+                    <p>Status: Unknown</p>
+                <% } %>
+
+                <!-- Checking order.checkoutId and its properties -->
+                <% if (order.checkoutId && order.checkoutId.itemList) { %>
+                    <p>Items: <%= order.checkoutId.itemList %></p>
+                    <ul>
+                        <% if (order.checkoutId.itemList.length > 0) { %>
+                            <% order.checkoutId.itemList.forEach(item => { %>
+                                <li>
+                                    Name: <%= item.name %>, Quantity: <%= item.quantity %>, Price: $<%= item.price %>
+                                </li>
+                            <% }) %>
+                        <% } else { %>
+                            <li>No items in this order.</li>
+                        <% } %>
+                    </ul>
+                <% } else { %>
+                    <p>No checkout details available for this order.</p>
+                <% } %>
             </li>
         <% }) %>
     </ul>
 <% } else { %>
     <p>You have no past orders.</p>
 <% } %>
-
-
 <br>
 <button type="button" onclick="window.location.href = '/'">Back to Home</button>
 <button type="button" onclick="window.location.href = '/checkout'">Go to Checkout</button>
