@@ -360,40 +360,66 @@ app.get('/checkout', async (req, res) => {
     }
   });
 
-  
 
 
 app.post('/checkout', async (req, res) => {
     //const { quantity, totalCost, preferredPaymentMethod, deliveryInstructions, purchaseOrderDate, orderNumber, orderTotal, salesRepresentativeName, orderStatus, additionalNotes } = req.body;
 
     // Create a new checkout document
-    const newCheckout = new Checkout({
-        itemList: req.body.itemList,
-        itemList_name: req.body.itemList_name,  // Current purchased Item's name
-        itemList_category: req.body.itemList_category, // Current purchased Item's category
-        totalCost: req.body.totalCost,
-        preferredPaymentMethod: req.body.preferredPaymentMethod,
-        deliveryInstructions: req.body.deliveryInstructions,
-        purchaseOrderDate: req.body.purchaseOrderDate,
-        orderNumber: req.body.orderNumber,
-        discounts: req.body.discounts,
-        salesRepresentativeName: req.body.salesRepresentative,
-        orderStatus: req.body.orderStatus,
-        additionalNotes: req.body.customerNotes
-    });
+    try {
+        const user = req.session.user;
 
-    newCheckout.save()
-        .then(() => {
-            console.log('Successfully save carpet kit details');
-            res.render('checkout_success');
-        })
-        .catch((error) => {
-            console.log('Failed to save carpet kit details', error);
-            res.render('checkout_error');
+        if (!user) {
+            res.status(401).send('Please login to checkout');
+            return;
+        }
+
+        const newCheckout = new Checkout({
+            itemList: req.body.itemList,
+            itemList_name: req.body.itemList_name,  // Current purchased Item's name
+            itemList_category: req.body.itemList_category, // Current purchased Item's category
+            totalCost: req.body.totalCost,
+            preferredPaymentMethod: req.body.preferredPaymentMethod,
+            deliveryInstructions: req.body.deliveryInstructions,
+            purchaseOrderDate: req.body.purchaseOrderDate,
+            orderNumber: req.body.orderNumber,
+            discounts: req.body.discounts,
+            salesRepresentativeName: req.body.salesRepresentative,
+            orderStatus: req.body.orderStatus,
+            additionalNotes: req.body.customerNotes
         });
 
-});
+        newCheckout.save()
+            .then(() => {
+                console.log('Successfully save carpet kit details');
 
+                // 获取checkout数据
+                const { customerId, description, amount } = req.body;
+
+                // 创建新的订单记录
+                const newOrder = new Order({
+                    userId: user._id,   // 使用session中的user ID
+                    customerId: customerId,
+                    description: description,
+                    amount: amount
+                });
+
+                // 保存订单到数据库
+                return newOrder.save();
+            })
+            .then(() => {
+                console.log('Order saved successfully');
+                res.render('checkout_success');
+            })
+            .catch((error) => {
+                console.log('Failed to save carpet kit details or order', error);
+                res.render('checkout_error');
+            });
+    } catch (error) {
+        console.error('Failed to record order during checkout', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 
 
@@ -727,45 +753,19 @@ app.get('/myOrders', async (req, res) => {
         // 获取与当前用户关联的订单，并与Customer模型一起填充
         const userOrders = await Order.find({ userId: user._id }).populate('customerId');
 
-        // 渲染myOrders视图并传递用户订单数据
-        res.render('myOrders', {
-            user: user,
-            orders: userOrders
-        });
-
+        if (userOrders.length === 0) {
+            // 如果用户没有订单，可以渲染一个特定的页面，提示用户没有订单
+            res.render('noOrders', { user: user });
+        } else {
+            // 渲染myOrders视图并传递用户订单数据
+            res.render('myOrders', {
+                user: user,
+                orders: userOrders
+            });
+        }
     } catch (error) {
         console.error('Failed to fetch user orders', error);
         res.status(500).send('Internal Server Error');
     }
 });
-app.post('/checkout', async (req, res) => {
-    try {
-        const user = req.session.user;
 
-        if (!user) {
-            res.status(401).send('Please login to checkout');
-            return;
-        }
-
-        // 获取checkout数据
-        const { customerId, description, amount } = req.body;
-
-        // 创建新的订单记录
-        const newOrder = new Order({
-            userId: user._id,   // 使用session中的user ID
-            customerId: customerId,
-            description: description,
-            amount: amount
-        });
-
-        // 保存订单到数据库
-        await newOrder.save();
-
-        // 响应用户
-        res.send('Checkout successful! Your order has been recorded.');
-
-    } catch (error) {
-        console.error('Failed to record order during checkout', error);
-        res.status(500).send('Internal Server Error');
-    }
-});

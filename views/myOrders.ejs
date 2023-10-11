@@ -26,11 +26,15 @@
                 <p>Status: <%= order.orderStatus %></p>
                 <p>Items:</p>
                 <ul>
-                    <% order.items.forEach(item => { %>
-                        <li>
-                            Name: <%= item.name %>, Quantity: <%= item.quantity %>, Price: $<%= item.price %>
-                        </li>
-                    <% }) %>
+                    <% if (order.items && order.items.length > 0) { %>
+                        <% order.items.forEach(item => { %>
+                            <li>
+                                Name: <%= item.name %>, Quantity: <%= item.quantity %>, Price: $<%= item.price %>
+                            </li>
+                        <% }) %>
+                    <% } else { %>
+                        <li>No items in this order.</li>
+                    <% } %>
                 </ul>
             </li>
         <% }) %>
@@ -38,6 +42,7 @@
 <% } else { %>
     <p>You have no past orders.</p>
 <% } %>
+
 
 <br>
 <button type="button" onclick="window.location.href = '/'">Back to Home</button>
