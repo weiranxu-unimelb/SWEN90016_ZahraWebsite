@@ -363,9 +363,6 @@ app.get('/checkout', async (req, res) => {
 
 
 app.post('/checkout', async (req, res) => {
-    //const { quantity, totalCost, preferredPaymentMethod, deliveryInstructions, purchaseOrderDate, orderNumber, orderTotal, salesRepresentativeName, orderStatus, additionalNotes } = req.body;
-
-    // Create a new checkout document
     try {
         const user = req.session.user;
 
@@ -374,10 +371,11 @@ app.post('/checkout', async (req, res) => {
             return;
         }
 
+        // 1. 创建一个新的 Checkout 文档
         const newCheckout = new Checkout({
             itemList: req.body.itemList,
-            itemList_name: req.body.itemList_name,  // Current purchased Item's name
-            itemList_category: req.body.itemList_category, // Current purchased Item's category
+            itemList_name: req.body.itemList_name,
+            itemList_category: req.body.itemList_category,
             totalCost: req.body.totalCost,
             preferredPaymentMethod: req.body.preferredPaymentMethod,
             deliveryInstructions: req.body.deliveryInstructions,
@@ -389,37 +387,33 @@ app.post('/checkout', async (req, res) => {
             additionalNotes: req.body.customerNotes
         });
 
-        newCheckout.save()
-            .then(() => {
-                console.log('Successfully save carpet kit details');
+        // 2. 保存 Checkout 文档
+        const savedCheckout = await newCheckout.save();
 
-                // 获取checkout数据
-                const { customerId, description, amount } = req.body;
+        console.log('Successfully saved checkout details');
 
-                // 创建新的订单记录
-                const newOrder = new Order({
-                    userId: user._id,   // 使用session中的user ID
-                    customerId: customerId,
-                    description: description,
-                    amount: amount
-                });
+        // 3. 获取 checkout 数据，创建新的订单记录
+        const { customerId, description, amount } = req.body;
 
-                // 保存订单到数据库
-                return newOrder.save();
-            })
-            .then(() => {
-                console.log('Order saved successfully');
-                res.render('checkout_success');
-            })
-            .catch((error) => {
-                console.log('Failed to save carpet kit details or order', error);
-                res.render('checkout_error');
-            });
+        const newOrder = new Order({
+            userId: user._id,   // 使用 session 中的 user ID
+            checkoutId: savedCheckout._id, // 关联订单和 Checkout
+            customerId: customerId,
+            description: description,
+            amount: amount
+        });
+
+        // 4. 保存订单到数据库
+        const savedOrder = await newOrder.save();
+
+        console.log('Order saved successfully');
+        res.render('checkout_success');
     } catch (error) {
         console.error('Failed to record order during checkout', error);
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 
 
