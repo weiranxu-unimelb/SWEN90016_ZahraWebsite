@@ -288,13 +288,27 @@
                 textStyle: {
                     color: '#070707'
                 },
+            },
+            label: {
+                normal: {
+                    show: true,
+                    position: 'top',
+                    formatter: '{c}'
+                }
             }
         },
         series: [
     {
         name: 'Quantity: ',
         type: 'bar',
-        data: quantities
+        data: quantities,
+        label: {
+            normal: {
+                show: true,
+                position: 'top',
+                formatter: '{c}'
+            }
+        }
     }
         ]
 
@@ -359,7 +373,14 @@
             {
                 name: 'Quantity: ',
                 type: 'bar',
-                data: quantities_high
+                data: quantities_high,
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'top',
+                        formatter: '{c}'
+                    }
+                }
             }
             ]
         };
@@ -422,7 +443,14 @@
                 {
                     name: 'Sold Category',
                     type: 'bar',
-                    data: sold_counts_cate
+                    data: sold_counts_cate,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top',
+                            formatter: '{c}'
+                        }
+                    }
                 }
             ]
         };
@@ -482,7 +510,14 @@
                 {
                     name: 'Sold Counts',
                     type: 'bar',
-                    data: sold_counts
+                    data: sold_counts,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top',
+                            formatter: '{c}'
+                        }
+                    }
                 }
             ]
         };
