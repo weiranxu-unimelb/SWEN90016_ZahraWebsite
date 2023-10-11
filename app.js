@@ -720,11 +720,17 @@ function findTop5FrequentKitNames(combinedItemList) {
     return top5KitNames;
   }
 
+const Schema = mongoose.Schema;
 //MyOrder
 const orderSchema = new mongoose.Schema({
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User',
+    },
+    checkoutId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Checkout', // 引用 'Checkout' 模型
+        required: true
     },
     customerId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -733,6 +739,7 @@ const orderSchema = new mongoose.Schema({
     description: String,
     amount: Number,
 });
+module.exports = mongoose.model('Order', orderSchema);
 
 const Order = mongoose.model('Order', orderSchema);
 app.get('/myOrders', async (req, res) => {
