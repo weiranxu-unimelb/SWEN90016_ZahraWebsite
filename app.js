@@ -630,7 +630,7 @@ app.get('/salesDashboard', async (req, res) => {
             const checkout_list = await Checkout.find();
             console.log(checkout_list);
             const combinedItemList = checkout_list
-            .map(item => item.itemList_name[0]) // Extract the only element of each array
+            .map(item => item.itemList.name) // Extract the only element of each array
             .filter(item => item && item !== '[]') // Filter out empty and '[]' strings
             .flatMap(item => item.split(',')) 
                 .map(item => item.trim());
@@ -639,7 +639,7 @@ app.get('/salesDashboard', async (req, res) => {
             const top5KitNames = findTop5FrequentKitNames(combinedItemList);
 
             const combinedItemList_cate = checkout_list
-            .map(item => item.itemList_category[0]) 
+            .map(item => item.itemList.category)
             .filter(item => item && item !== '[]')
             .flatMap(item => item.split(',')) 
                 .map(item => item.trim()); 
