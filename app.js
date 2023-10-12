@@ -155,7 +155,7 @@ const carpetKitItemSchema = new mongoose.Schema({
     }
 });
 
-
+const Schema = mongoose.Schema;
 // Create model.
 const CarpetCategory = mongoose.model('CarpetCategory', carpetCategorySchema);
 const CarpetItem = mongoose.model('CarpetItem', carpetItemSchema);
@@ -310,9 +310,22 @@ const cart = [];
 
 const checkoutSchema = new mongoose.Schema({
     // TODO: add the schema of selectedItems / selectedKits
-    itemList: [String],
-    itemList_name: [String], 
-    itemList_category: [String],
+    username: String,
+    role: String,
+    itemList: [{
+        itemId: {
+            type: Schema.Types.ObjectId,
+            ref: 'CarpetItem',
+        },
+        name: String,
+        quantity: Number,
+        price: Number,
+        image: String,
+        category: {
+            type: Schema.Types.ObjectId,
+            ref: 'CarpetCategory'
+        },
+    }],
     totalCost: Number,
     preferredPaymentMethod: String,
     deliveryInstructions: String,
@@ -364,41 +377,59 @@ app.get('/checkout', async (req, res) => {
 
 app.post('/checkout', async (req, res) => {
     try {
+        console.log(req.body);  // 查看整个请求体
+        console.log(req.body.items);  // 查看items数组
+        let itemList = [];
+        if (req.body.items && Array.isArray(req.body.items)) {
+            req.body.items.forEach(item => {
+                let processedItem = {
+                    name: item.name,
+                    quantity: Number(item.quantity),
+                    price: Number(item.price),
+                };
+                itemList.push(processedItem);
+            });
+        }
+        const generatedOrderNumber = req.body.orderNumber || generateOrderNumber();
         const user = req.session.user;
+        const { username, role } = req.body;
         const newCheckout = new Checkout({
-            itemList: req.body.itemList,
-            itemList_name: req.body.itemList_name,
-            itemList_category: req.body.itemList_category,
+            itemList: itemList,
             totalCost: req.body.totalCost,
+            username: username,
+            role: role,
             preferredPaymentMethod: req.body.preferredPaymentMethod,
             deliveryInstructions: req.body.deliveryInstructions,
             purchaseOrderDate: req.body.purchaseOrderDate || new Date(),
-            orderNumber: req.body.orderNumber || generateOrderNumber(),
+            orderNumber: generatedOrderNumber,
             discounts: req.body.discounts,
-            salesRepresentativeName: req.body.salesRepresentative,
+            salesRepresentativeName: req.body.salesRepresentativeName,
             orderStatus: req.body.orderStatus,
             additionalNotes: req.body.customerNotes
         });
+
         const savedCheckout = await newCheckout.save();
         const { customerId, description, amount } = req.body;
 
-        const generatedOrderNumber = req.body.orderNumber || generateOrderNumber();
-        console.log('Received itemList:', req.body.itemList);
+
+        console.log('Received itemList:', newCheckout.itemList);
         console.log('Session user during POST /checkout:', req.session.user);
         if (!user) {
             res.status(401).send('Please login to checkout');
             return;
         }
         console.log('Request body:', req.body);
-        // 1. 创建一个新的 Checkout 文档
-
-
-        // 2. 保存 Checkout 文档
-
         console.log('Successfully saved checkout details');
 
-        // 3. 获取 checkout 数据，创建新的订单记录
-
+        const detailedItemList = [];
+        for (let item of itemList) {
+            const carpetItem = await CarpetItem.findById(item.id);
+            detailedItemList.push({
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price
+            });
+        }
 
         //const generatedOrderNumber = newOrder.orderNumber || generateOrderNumber();
         const newOrder = new Order({
@@ -407,18 +438,20 @@ app.post('/checkout', async (req, res) => {
             customerId: customerId,
             description: description,
             amount: amount,
-            itemList: savedCheckout.itemList,
+            itemList: detailedItemList,
             totalCost: savedCheckout.totalCost,
             orderNumber: generatedOrderNumber,
             purchaseOrderDate: savedCheckout.purchaseOrderDate,
             orderStatus: savedCheckout.orderStatus
         });
+        console.log('About to save order:', newOrder);
+        const savedOrder = await newOrder.save();
 
 
 
         // 4. 保存订单到数据库
 
-        const savedOrder = await newOrder.save();
+
         console.log('Fetched orders:', newOrder);
         console.log('Saved order:', savedOrder);
         console.log('Order saved successfully');
@@ -737,7 +770,8 @@ function findTop5FrequentKitNames(combinedItemList) {
     return top5KitNames;
   }
 
-const Schema = mongoose.Schema;
+
+
 //MyOrder
 const orderSchema = new mongoose.Schema({
     userId: {
@@ -791,8 +825,12 @@ app.get('/myOrders', async (req, res) => {
         }
 
         //const userOrders = await Order.find({ userId: user._id }).populate('customerId');
-        const userOrders = await Order.find({ userId: user._id }).populate('checkoutId').populate('customerId').populate('userId');
+        //const userOrders = await Order.find({ userId: user._id }).populate('checkoutId').populate('customerId').populate('userId');
         //const userOrders = await Order.find({ userId: user._id });
+        const userOrders = await Order.find({ userId: user._id })
+            .populate('checkoutId')
+            .populate('customerId')
+            .populate('userId')
 
         if (userOrders.length === 0) {
             res.render('noOrders', { user: user });

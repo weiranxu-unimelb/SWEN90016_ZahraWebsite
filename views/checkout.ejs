@@ -30,6 +30,10 @@
     <h2>Order Details</h2>
     <form action="/checkout" method="POST">
     <!-- <form id="addItemForm"> -->
+        <!-- Hidden fields for username and role -->
+        <input type="hidden" name="username" value="<%= user ? user.username : '' %>">
+        <input type="hidden" name="role" value="<%= user ? user.role : '' %>">
+
         <label for="carpetItem1">Choose Kit Item(s):</label><br>
         <select id="item1" name="carpetkititem1" required>
             <% combinedItems.forEach(item => { %>
@@ -126,6 +130,30 @@
     const totalCost = document.getElementById('totalCost');
     // const items_record = document.getElementById('itemList_name');
     const items = [];
+    function addItemToForm(item) {
+        const index = items.length;
+
+        const inputName = document.createElement('input');
+        inputName.setAttribute('type', 'hidden');
+        inputName.setAttribute('name', `items[${index}][name]`);
+        inputName.value = item.name;
+
+        const inputQuantity = document.createElement('input');
+        inputQuantity.setAttribute('type', 'hidden');
+        inputQuantity.setAttribute('name', `items[${index}][quantity]`);
+        inputQuantity.value = item.quantity;
+
+        const inputPrice = document.createElement('input');
+        inputPrice.setAttribute('type', 'hidden');
+        inputPrice.setAttribute('name', `items[${index}][price]`);
+        inputPrice.value = item.price;
+
+        const form = document.querySelector("form[action='/checkout']");
+        form.appendChild(inputName);
+        form.appendChild(inputQuantity);
+        form.appendChild(inputPrice);
+    }
+
 
     //addItemForm.addEventListener('submit', (e) => {
     //    e.preventDefault();
@@ -157,10 +185,30 @@
         };
         items.push(item);
 
+        // const inputName = document.createElement('input');
+        // inputName.type = 'hidden';
+        // inputName.name = 'items[' + items.length + '][name]';
+        // inputName.value = item.name;
+        //
+        // const inputQuantity = document.createElement('input');
+        // inputQuantity.type = 'hidden';
+        // inputQuantity.name = 'items[' + items.length + '][quantity]';
+        // inputQuantity.value = item.quantity;
+        //
+        // const inputPrice = document.createElement('input');
+        // inputPrice.type = 'hidden';
+        // inputPrice.name = 'items[' + items.length + '][price]';
+        // inputPrice.value = item.price;
+        //
+        // const form = document.querySelector('form[action="/checkout"]');
+        // form.appendChild(inputName);
+        // form.appendChild(inputQuantity);
+        // form.appendChild(inputPrice);
         // Update the displayed list and total cost
         updateItemList();
         updateTotalCost();
         updateRecordName();
+        addItemToForm(item);
     });
 
     function updateItemList() {
