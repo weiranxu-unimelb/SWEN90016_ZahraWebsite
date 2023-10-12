@@ -21,7 +21,7 @@
     <ul>
         <% orders.forEach(order => { %>
             <li>
-                <h3>Username: <%= order.userId ? order.userId.username : 'Unknown' %></h3>
+
 
                 <p>Order Status: <%= order.orderStatus || 'Unknown' %></p>
 
@@ -39,7 +39,6 @@
 
                 <!-- Additional order details -->
                 <p>Total Cost: $<%= order.totalCost %></p>
-                <p>Description: <%= order.description %></p>
             </li>
         <% }); %>
     </ul>
