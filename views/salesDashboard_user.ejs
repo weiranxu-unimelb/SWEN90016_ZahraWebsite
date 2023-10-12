@@ -2,16 +2,51 @@
 <html>
 <head>
     <title>Remind</title>
+    <style type="text/css">
+        body {
+            background: url("dashborad.jpg") fixed no-repeat;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .ylxq {
+            align-items: center;
+            margin:0 auto;
+            width:400px;
+            height:400px;
+            position: center;
+            background-color: transparent;
+            border-radius: 18px;
+            overflow: hidden;
+            backdrop-filter: blur(40px);
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #a2af4c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            font-size: 20px;
+        }
+        </style>
 </head>
 <body>
+<div class="ylxq">
     <h2>Reminder: </h2>
-    
+
     <p>Sorry, normal user are not authorized to view this page.</p>
     <!-- <button type="button" href="/">Back to Home</button> -->
     <br><br>
     <button type="button" onclick="window.location.href = '/index'">Back to Home</button>
     <br><br>
     <button type="button" onclick="window.location.href = '/'">Log Out</button>
+</div>
     
     
 </body>

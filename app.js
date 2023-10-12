@@ -580,7 +580,7 @@ app.post('/register', async (req, res) => {
 // 登录页面
 app.get('/login', (req, res) => {
     const message = ''; // 初始化 message 变量为空
-    res.send(req.params);
+    //res.send(req.params);
     res.render('login'); // 传递 message 变量给模板
 });
 

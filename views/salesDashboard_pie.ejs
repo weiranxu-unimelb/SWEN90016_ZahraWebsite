@@ -8,7 +8,38 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style type="text/css">
+        body {
+            background: url("dashborad.jpg") fixed no-repeat;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
 
+        .ylxq {
+
+            margin:0 auto;
+            width:1200px;
+            height:1600px;
+            position: center;
+            background-color: transparent;
+            border-radius: 18px;
+            overflow: hidden;
+            backdrop-filter: blur(40px);
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #a2af4c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            font-size: 20px;
+        }
     </style>
     <style>
         #lowInventoryList_1 {
@@ -41,77 +72,79 @@
 
 </head>
 <body>
-    <div id="reminder" style="display:none;">
-        <p>Only Administrators are authorized for this page!</p>
-    </div>
-    <h1 align="center">Sales Dashboard</h1>
-    <div id="content" style="margin-top:20px;">
+    <div class="ylxq">
+        <div id="reminder" style="display:none;">
+            <p>Only Administrators are authorized for this page!</p>
+        </div>
+        <h1 align="center">Sales Dashboard</h1>
+        <div id="content" style="margin-top:20px;">
 
-        <div style="display:flex;justify-content:center;align-items:center;margin-top:20px;">
+            <div style="display:flex;justify-content:center;align-items:center;margin-top:20px;">
+                <div >
+                    <button type="button" onclick="window.location.href = '/index'">Back to Home</button>
+                </div>
+                <div style="margin-right:20px;"></div>
+
+                <div >
+                    <button type="button" onclick="window.location.href = '/'">Log Out</button>
+                </div>
+
+            </div>
+
+
+            <h4 align="center">Choose Type</h4>
+            <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;"">
             <div >
-                <button type="button" onclick="window.location.href = '/index'">Back to Home</button>
+                <button type="button" onclick="window.location.href = '/salesDashboard'">Bar Charts</button>
             </div>
             <div style="margin-right:20px;"></div>
 
             <div >
-                <button type="button" onclick="window.location.href = '/'">Log Out</button>
-            </div>
-
-        </div>
-
-
-        <h4 align="center">Choose Type</h4>
-        <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;"">
-            <div >
-                <button type="button" onclick="window.location.href = '/salesDashboard'">Bar Charts</button>
-            </div>
-        <div style="margin-right:20px;"></div>
-
-        <div >
                 <button type="button" onclick="window.location.href = '/salesDashboard_pie'">Pie Charts</button>
             </div>
 
         </div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
-        <div>
-            <h2>Top 5 Carpet Item Sold</h2>
-            <ul>
-                <% sold_name_json.forEach(function(item){%>
-                    <li>
-                        Carpet Name: <%= item.name %> - Sold: <%= item.count %> Pieces
-                    </li>
-                <% })%>
-            </ul>    </div>
-        <div style="margin-right:20px;"></div>
-        <div >
-            <h2>Top 5 Carpet Item Categories Sold</h2>
-            <ul>
-                <% for (const item of sold_cate_json) { %>
-                    <li>Category Name: <%= item.name %> - Sold: <%= item.count %> Pieces</li>
-                <% } %>
-            </ul>    </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
+            <div>
+                <h2>Top 5 Carpet Item Sold</h2>
+                <ul>
+                    <% sold_name_json.forEach(function(item){%>
+                        <li>
+                            Carpet Name: <%= item.name %> - Sold: <%= item.count %> Pieces
+                        </li>
+                    <% })%>
+                </ul>    </div>
+            <div style="margin-right:20px;"></div>
+            <div >
+                <h2>Top 5 Carpet Item Categories Sold</h2>
+                <ul>
+                    <% for (const item of sold_cate_json) { %>
+                        <li>Category Name: <%= item.name %> - Sold: <%= item.count %> Pieces</li>
+                    <% } %>
+                </ul>    </div>
 
-    </div>
-    <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
-    <div >
-        <h2>Top 5 Carpet Items with Low Inventory</h2>
-        <ul>
-            <% lowInventoryItems.forEach(function(item){%>
-                <li>
-                    Carpet Name: <%= item.name %> - Quantity: <%= item.quantity %> in stock
-                </li>
-            <% })%>
-        </ul>    </div>
-    <div style="margin-right:20px;"></div>
-    <div >
-        <h2>Top 5 Carpet Items with High Inventory</h2>
-        <ul>
-            <% for (const item of highInventoryItems) { %>
-                <li>Carpet Name: <%= item.name %> - Quantity: <%= item.quantity %> in stock</li>
-            <% } %>
-        </ul>    </div>
+        </div>
+        <div style="display:flex;justify-content:center;align-items:center;margin-top:10px;">
+            <div >
+                <h2>Top 5 Carpet Items with Low Inventory</h2>
+                <ul>
+                    <% lowInventoryItems.forEach(function(item){%>
+                        <li>
+                            Carpet Name: <%= item.name %> - Quantity: <%= item.quantity %> in stock
+                        </li>
+                    <% })%>
+                </ul>    </div>
+            <div style="margin-right:20px;"></div>
+            <div >
+                <h2>Top 5 Carpet Items with High Inventory</h2>
+                <ul>
+                    <% for (const item of highInventoryItems) { %>
+                        <li>Carpet Name: <%= item.name %> - Quantity: <%= item.quantity %> in stock</li>
+                    <% } %>
+                </ul>    </div>
 
+        </div>
     </div>
 
     <ul id="lowInventoryList_1">
@@ -219,7 +252,10 @@
             title: {
                 text: 'Top 5 Carpets Items Sold',
 
-                left: 'center'
+                left: 'center',
+                textStyle: {
+                    color: "#070707",
+                }
             },
             tooltip: {
                 trigger: 'item'
@@ -227,7 +263,11 @@
             legend: {
                 x:'center',
                 y:'top',
-                padding: [50,0,0,0]
+                padding: [50,0,0,0],
+                textStyle: { //图例文字的样式
+                    color: '#070707',
+                    fontSize: 18
+                },
 
             },
             series: [
@@ -283,7 +323,10 @@
         option2 = {
             title: {
                 text: 'Top 5 Carpet Item Categories Sold',
-                left: 'center'
+                left: 'center',
+                textStyle: {
+                    color: "#070707",
+                }
             },
             tooltip: {
                 trigger: 'item'
@@ -291,7 +334,11 @@
             legend: {
                 x:'center',
                 y:'top',
-                padding: [50,0,0,0]
+                padding: [50,0,0,0],
+                textStyle: { //图例文字的样式
+                    color: '#070707',
+                    fontSize: 18
+                }
 
             },
             series: [
@@ -347,7 +394,9 @@
         option3 = {
             title: {
                 text: 'Top 5 Carpet Items with Low Inventory',
-
+                textStyle: {
+                    color: "#070707",
+                },
                 left: 'center'
             },
             tooltip: {
@@ -356,7 +405,11 @@
             legend: {
                 x:'center',
                 y:'top',
-                padding: [50,0,0,0]
+                padding: [50,0,0,0],
+                textStyle: { //图例文字的样式
+                    color: '#070707',
+                    fontSize: 18
+                }
 
             },
             series: [
@@ -412,7 +465,9 @@
         var option4 = {
             title: {
                 text: 'Top 5 Carpet Items with High Inventory',
-
+                textStyle: {
+                    color: "#070707",
+                },
                 left: 'center'
             },
             tooltip: {
@@ -421,7 +476,11 @@
             legend: {
                 x:'center',
                 y:'top',
-                padding: [50,0,0,0]
+                padding: [50,0,0,0],
+                textStyle: { //图例文字的样式
+                    color: '#070707',
+                    fontSize: 18
+                }
 
             },
             series: [
@@ -442,8 +501,8 @@
                             show:true,
                             position:'outer', //标签的位置
                             textStyle : {
-                                fontWeight : 400 ,
-                                fontSize : 16    //文字的字体大小
+                                fontWeight : 500 ,
+                                fontSize : 18    //文字的字体大小
                             },
                             formatter:function (arg) {
                                 return arg.percent+'%'+'\n'+arg.data.name+': '+arg.data.value

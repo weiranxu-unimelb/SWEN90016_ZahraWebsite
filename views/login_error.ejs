@@ -4,11 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Error</title>
+    <style type="text/css">
+        html,
+        body {
+            margin: 0;
+            font-family: "Arial","PingFang SC", "Microsoft Yahei", sans-serif;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url("login-background.jpg") fixed no-repeat;
+            background-size: cover;
+        }
+
+        .box {
+            width: 300px;
+            height:400px;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            z-index: 100;
+            background-color: transparent;
+            border-radius: 18px;
+            overflow: hidden;
+            backdrop-filter: blur(40px);
+        }
+
+
+        .box input,
+        .box button{
+            margin: 3px 0;
+            height: 36px;
+            border: none;
+            background-color: rgb(255, 255, 255);
+            border-radius: 4px;
+            padding: 0 14px;
+            color: #070707;
+        }
+
+        .box button {
+            font-size:20px;
+        }
+
+        .box label{
+            font-width: bold;
+            font-size: 20px;
+            color: #030303;
+        }
+
+        .box p{
+            font-size: 20px;
+        }
+
+        .wel{
+            font-weight: bolder;
+            color: #070707;
+        }
+
+
+    </style>
 </head>
 <body>
-<h1>Login Error</h1>
-<h3>Invalid User or Incorrect Password</h3>
-<h3>Check again</h3>
-<p><a href="/">Back to Login</a></p>
+
+<div class="container">
+    <div class="box">
+        <h1>Login Error</h1>
+        <h2>Invalid User <br>or <br>Incorrect Password</h2>
+        <h3>Check again !!!</h3>
+        <button type="button" onclick="window.location.href = '/login'">Back to Login</button>
+
+    </div>
+</div>
+
 </body>
 </html>

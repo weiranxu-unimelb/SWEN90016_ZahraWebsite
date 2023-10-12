@@ -3,17 +3,125 @@
 <html>
 <head>
     <title>Create Carpet Category</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url("login-background.jpg") fixed no-repeat;
+            background-size: cover;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        .ylxq {
+
+            margin:0 auto;
+            width:500px;
+            height:350px;
+            position: center;
+            background-color: transparent;
+            border-radius: 18px;
+            overflow: hidden;
+            backdrop-filter: blur(40px);
+        }
+
+        form {
+            margin-top: 20px;
+            text-align: left;
+            display: inline-block;
+            text-align: left;
+            margin-left: auto;
+            margin-right: auto;
+            width: 400px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        input[type="submit"],
+        button {
+            padding: 10px 20px;
+            background-color: #a2af4c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            font-size: 20px;
+        }
+
+        input[type="submit"]:hover,
+        button:hover {
+            background-color: #45a049;
+        }
+
+        br {
+            margin-bottom: 10px;
+        }   
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>Create Carpet Category</h1>
-    <form action="/carpet-category" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-        <br>
-        <br>
-        <button type="submit">Create</button>
+    <div class="ylxq">
 
-        <br><br>
-        <button type="button" onclick="window.location.href = '/'">Log Out</button>
+        <h1>Create Carpet Category</h1>
+        <form action="/carpet-category" method="POST">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <br>
+            <br>
+            <button type="submit">Create</button>
+
+            <br><br>
+            <button type="button" onclick="window.location.href = '/'">Log Out</button>
+    </div>
+
+    <script>
+
+        $(function(){
+            $(window).resize();
+        });
+        $(window).resize(function(){
+            $(".ylxq").css({
+                position: "absolute",
+                left: ($(window).width() - $(".ylxq").outerWidth())/2,
+                top: ($(window).height() - $(".ylxq").outerHeight())/2
+            });
+        })
+    </script>
 </body>
 </html>
