@@ -694,7 +694,7 @@ app.get('/salesDashboard', async (req, res) => {
 
             // Fetch Top 5 sold Category Dictionary [ { name: '65183', count: 2 }, { name: 'NaN', count: 2 } ]
             const combinedItemList_cate = checkout_list
-                .map(item => item.itemList.map(item => item.itemList.category.name))
+                .flatMap(item => item.itemList.map(item => item.itemList.category.name))
                 .filter(item => item && item !== '[]')
                 .map(item => item.trim());
 
