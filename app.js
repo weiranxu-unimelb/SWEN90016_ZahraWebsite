@@ -673,7 +673,7 @@ app.get('/login_error', (req, res) => {
 app.get('/salesDashboard', async (req, res) => {
     try {
         const user = req.session.user;
-        if (user.role == 'admin') {
+        if (user.role === 'admin') {
             // Fetch Top 5 carpet items with low/high inventory
             const lowInventoryItems = await CarpetItem.find().sort({ quantity: 1 }).limit(5);
             const highInventoryItems = await CarpetItem.find().sort({ quantity: -1 }).limit(5);
@@ -694,7 +694,7 @@ app.get('/salesDashboard', async (req, res) => {
 
             // Fetch Top 5 sold Category Dictionary [ { name: '65183', count: 2 }, { name: 'NaN', count: 2 } ]
             const combinedItemList_cate = checkout_list
-                .flatMap(item => item.itemList.map(item => item.category))
+                .map(item => item.itemList.map(item => item.itemList.category.name))
                 .filter(item => item && item !== '[]')
                 .map(item => item.trim());
 
@@ -744,7 +744,7 @@ app.post('/salesDashboard', (req, res) => {
 
 app.post('/salesDashboard_pie', (req, res) => {
     const user = req.session.user;
-    if (user.role == 'admin') {
+    if (user.role === 'admin') {
         res.render('salesDashboard_pie');
     } else {
         res.render('salesDashboard_user');
@@ -755,7 +755,7 @@ app.post('/salesDashboard_pie', (req, res) => {
 app.get('/salesDashboard_pie', async (req, res) => {
     try {
         const user = req.session.user;
-        if (user.role == 'admin') {
+        if (user.role === 'admin') {
             const lowInventoryItems = await CarpetItem.find().sort({ quantity: 1 }).limit(5);
             const highInventoryItems = await CarpetItem.find().sort({ quantity: -1 }).limit(5);
             // Fetch Top 5 sold Name/Category
