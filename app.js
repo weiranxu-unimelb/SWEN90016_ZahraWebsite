@@ -681,7 +681,7 @@ app.get('/salesDashboard', async (req, res) => {
             // Fetch Top 5 sold Name/Category
             const checkout_list = await Checkout.find();
 
-            // Use map and reduce to calculate the total cost of all checkouts
+            // Calculate the total cost of all checkouts
             const totalCosts = checkout_list.reduce((total, checkout) => total + checkout.totalCost, 0);
 
             // Fetch Top 5 sold Name Dictionary ({"name": ; "count": })
@@ -698,7 +698,17 @@ app.get('/salesDashboard', async (req, res) => {
                 .filter(item => item && item !== '[]')
                 .map(item => item.trim());
 
-            const top5KitCates = findTop5FrequentKitNames(combinedItemList_cate);
+            // Calculate the count of each category
+            const categoryCounts = combinedItemList_cate.reduce((counts, category) => {
+                counts[category] = (counts[category] || 0) + 1;
+                return counts;
+            }, {});
+
+            // Convert categoryCounts to an array of objects
+            const top5KitCates = Object.entries(categoryCounts)
+                .map(([name, count]) => ({ name, count }))
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 5);
 
             res.render('salesDashboard', {
                 lowInventoryItems: lowInventoryItems,
@@ -712,12 +722,12 @@ app.get('/salesDashboard', async (req, res) => {
             res.render('salesDashboard_user');
             console.log("Not an administrator");
         }
-
     } catch (error) {
         console.error('Failed to fetch carpet items', error);
         res.render('dashboard_error');
     }
 });
+
 
 
 app.post('/salesDashboard', (req, res) => {
