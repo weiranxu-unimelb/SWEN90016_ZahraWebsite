@@ -615,6 +615,61 @@ app.get('/login_error', (req, res) => {
 
 
 //Analytics Dashboard
+// app.get('/salesDashboard', async (req, res) => {
+//     try {
+//         const user = req.session.user;
+//         if (user.role == 'admin') {
+//             // Fetch Top 5 carpet items with low/high inventory
+//             const lowInventoryItems = await CarpetItem.find().sort({ quantity: 1 }).limit(5);
+//             const highInventoryItems = await CarpetItem.find().sort({ quantity: -1 }).limit(5);
+//
+//             // await Checkout.deleteMany({}); // ! Delete all current Checkout records
+//             // const totalCosts = checkout_list.map((checkout) => checkout.totalCost);
+//
+//             // Fetch Top 5 sold Name/Category
+//             const checkout_list = await Checkout.find();
+//             console.log(checkout_list);
+//             const combinedItemList = checkout_list
+//             .map(item => item.itemList.name) // Extract the only element of each array
+//             .filter(item => item && item !== '[]') // Filter out empty and '[]' strings
+//             .flatMap(item => item.split(','))
+//                 .map(item => item.trim());
+//
+//             // Fetch Top 5 sold Name Dictionary ({"name": ; "count": })
+//             const top5KitNames = findTop5FrequentKitNames(combinedItemList);
+//
+//             const combinedItemList_cate = checkout_list
+//             .map(item => item.itemList.category)
+//             .filter(item => item && item !== '[]')
+//             .flatMap(item => item.split(','))
+//                 .map(item => item.trim());
+//
+//             // Fetch Top 5 sold Category Dictionary [ { name: '65183', count: 2 }, { name: 'NaN', count: 2 } ]
+//             const top5KitCates = findTop5FrequentKitNames(combinedItemList_cate);
+//             console.log(top5KitCates); // Use for debugging
+//
+//
+//
+//             res.render('salesDashboard', {
+//                 lowInventoryItems: lowInventoryItems,
+//                 highInventoryItems: highInventoryItems,
+//                 checkout_list: checkout_list,
+//                 sold_name_json: top5KitNames,
+//                 sold_cate_json: top5KitCates,
+//                 //plot_1: plot_1_html
+//             });
+//         } else {
+//             res.render('salesDashboard_user');
+//             console.log("Not an administrator");
+//         }
+//
+//
+//     } catch (error) {
+//         console.error('Failed to fetch carpet items', error);
+//         res.render('dashboard_error');
+//     }
+// });
+
 app.get('/salesDashboard', async (req, res) => {
     try {
         const user = req.session.user;
@@ -622,53 +677,48 @@ app.get('/salesDashboard', async (req, res) => {
             // Fetch Top 5 carpet items with low/high inventory
             const lowInventoryItems = await CarpetItem.find().sort({ quantity: 1 }).limit(5);
             const highInventoryItems = await CarpetItem.find().sort({ quantity: -1 }).limit(5);
-            
-            // await Checkout.deleteMany({}); // ! Delete all current Checkout records
-            // const totalCosts = checkout_list.map((checkout) => checkout.totalCost);
 
             // Fetch Top 5 sold Name/Category
             const checkout_list = await Checkout.find();
-            console.log(checkout_list);
-            const combinedItemList = checkout_list
-            .map(item => item.itemList.name) // Extract the only element of each array
-            .filter(item => item && item !== '[]') // Filter out empty and '[]' strings
-            .flatMap(item => item.split(',')) 
-                .map(item => item.trim());
-            
+
+            // Use map and reduce to calculate the total cost of all checkouts
+            const totalCosts = checkout_list.reduce((total, checkout) => total + checkout.totalCost, 0);
+
             // Fetch Top 5 sold Name Dictionary ({"name": ; "count": })
+            const combinedItemList = checkout_list
+                .flatMap(item => item.itemList.map(item => item.name))
+                .filter(item => item && item !== '[]')
+                .map(item => item.trim());
+
             const top5KitNames = findTop5FrequentKitNames(combinedItemList);
 
-            const combinedItemList_cate = checkout_list
-            .map(item => item.itemList.category)
-            .filter(item => item && item !== '[]')
-            .flatMap(item => item.split(',')) 
-                .map(item => item.trim()); 
-            
             // Fetch Top 5 sold Category Dictionary [ { name: '65183', count: 2 }, { name: 'NaN', count: 2 } ]
-            const top5KitCates = findTop5FrequentKitNames(combinedItemList_cate);
-            console.log(top5KitCates); // Use for debugging
+            const combinedItemList_cate = checkout_list
+                .flatMap(item => item.itemList.map(item => item.category))
+                .filter(item => item && item !== '[]')
+                .map(item => item.trim());
 
-            
+            const top5KitCates = findTop5FrequentKitNames(combinedItemList_cate);
 
             res.render('salesDashboard', {
                 lowInventoryItems: lowInventoryItems,
                 highInventoryItems: highInventoryItems,
                 checkout_list: checkout_list,
                 sold_name_json: top5KitNames,
-                sold_cate_json: top5KitCates, 
-                //plot_1: plot_1_html
+                sold_cate_json: top5KitCates,
+                totalCosts: totalCosts, // Add totalCosts to the rendering context
             });
         } else {
             res.render('salesDashboard_user');
             console.log("Not an administrator");
         }
-        
-       
+
     } catch (error) {
         console.error('Failed to fetch carpet items', error);
         res.render('dashboard_error');
     }
 });
+
 
 app.post('/salesDashboard', (req, res) => {
     const user = req.session.user;
